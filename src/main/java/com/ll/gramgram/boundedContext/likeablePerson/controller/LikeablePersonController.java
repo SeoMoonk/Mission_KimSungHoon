@@ -53,8 +53,6 @@ public class LikeablePersonController {
         return rq.redirectWithMsg("/likeablePerson/list", createRsData);
     }
 
-
-
     @GetMapping("/list")
     public String showList(Model model) {
         InstaMember instaMember = rq.getMember().getInstaMember();
@@ -67,4 +65,18 @@ public class LikeablePersonController {
 
         return "usr/likeablePerson/list";
     }
+
+
+    @PreAuthorize("isAuthenticated()")      //로그인된 사용자만 가능(권한이 있어야 가능)
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id)  //아이디를 받아와서 GET 요청을 수행.
+    {
+
+        //서비스에 삭제 요청
+        likeablePersonService.like_deleteById(id);
+
+        return rq.redirectWithMsg("/likeablePerson/list","삭제가 완료되었습니다.");
+    }
+
+
 }

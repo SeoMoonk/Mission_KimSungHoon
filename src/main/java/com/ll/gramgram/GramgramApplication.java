@@ -14,13 +14,13 @@ public class GramgramApplication {
         SpringApplication.run(GramgramApplication.class, args);
     }
 
-    @RestController
-    public static class TestController {
-
-        @GetMapping("/")
-        public String test() {
-            return "1week";
-        }
-    }
+//    @RestController
+//    public static class TestController {
+//
+//        @GetMapping("/")
+//        public String test() {
+//            return "1week";
+//        }
+//    }
 
 }

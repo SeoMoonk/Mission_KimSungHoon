@@ -51,4 +51,60 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
 
+//아직 필요 없음.
+//    public LikeablePerson getLikeablePersonById(Long id)
+//    {
+//        Optional<LikeablePerson> getLikeable = this.likeablePersonRepository.findById(id);
+//
+//        if(getLikeable.isPresent())
+//        {
+//            return getLikeable.get();
+//        }
+//        else
+//        {
+//            throw new DataNotFoundException("해당 ID를 가진 사용자를 찾을 수 없습니다.");
+//        }
+//    }
+
+
+    @Transactional      //DB 작업으로 수행될 수 있도록
+    public void like_deleteById(Long id)
+    {
+        //받아온 id 값을 가지고 LikeablePerson 객체를 Optional 로 가져옴.
+        Optional<LikeablePerson> likeable_Optional = likeablePersonRepository.findById(id);
+
+        //올바른 id 값으로 객체를 잘 받아올 수 있었는지 검사 진행.
+        if(likeable_Optional.isPresent())
+        {
+            //잘 불러와 졌다면, 그 객체를 얻음.
+            LikeablePerson deletePerson = likeable_Optional.get();
+
+            InstaMember toInstaMember = deletePerson.getToInstaMember();
+
+            //(ManyToMany 관계)외래키 연결에서 떼어놓기 위함.
+            deletePerson.setFromInstaMember(null);
+            deletePerson.setToInstaMember(null);
+
+            //좋아했던 관계 삭제
+            likeablePersonRepository.delete(deletePerson);
+
+            //내가 좋아했던 사람이 회원가입 되지 않았던 의문의 사람이라면 (gender가 U 라면) -> 인스타 멤버에서도 삭제.
+            //단, 문제점 -> 의문의 사람을 이상하게도 나만 좋아하던게 아닐 수도 있다... 이 점은 나중에 추가하면 좋을듯...!
+            if (toInstaMember.getGender().equals("U"))
+            {
+                //필요없어진 인스타멤버 객체 삭제
+                instaMemberService.delete(toInstaMember);
+            }
+            else
+            {
+                //시스템 입출력보다는 예외처리로 만들어 주는게 좋지만.. 일단 생략
+                System.out.println("삭제하려던 사용자는 우리의 회원입니다!");
+            }
+        }
+        else
+        {
+            //예외처리
+            throw new DataNotFoundException("받아온 ID 값으로는 사용자를 불러올 수 없습니다.");
+        }
+    }
 }

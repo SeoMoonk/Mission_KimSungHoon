@@ -83,4 +83,10 @@ public class InstaMemberService {
         // 생성
         return create(username, gender);
     }
+
+    //필요 없어진 InstaMember 를 삭제할 수 있도록.
+    public void delete(InstaMember instaMember)
+    {
+        this.instaMemberRepository.delete(instaMember);
+    }
 }
