@@ -7,6 +7,7 @@ import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
+    private final MemberService memberService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
@@ -51,20 +53,20 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
 
-//아직 필요 없음.
-//    public LikeablePerson getLikeablePersonById(Long id)
-//    {
-//        Optional<LikeablePerson> getLikeable = this.likeablePersonRepository.findById(id);
-//
-//        if(getLikeable.isPresent())
-//        {
-//            return getLikeable.get();
-//        }
-//        else
-//        {
-//            throw new DataNotFoundException("해당 ID를 가진 사용자를 찾을 수 없습니다.");
-//        }
-//    }
+
+    public LikeablePerson getLikeablePersonById(Long id)
+    {
+        Optional<LikeablePerson> getLikeable = this.likeablePersonRepository.findById(id);
+
+        if(getLikeable.isPresent())
+        {
+            return getLikeable.get();
+        }
+        else
+        {
+            throw new DataNotFoundException("해당 ID를 가진 사용자를 찾을 수 없습니다.");
+        }
+    }
 
 
     @Transactional      //DB 작업으로 수행될 수 있도록
@@ -107,4 +109,22 @@ public class LikeablePersonService {
             throw new DataNotFoundException("받아온 ID 값으로는 사용자를 불러올 수 없습니다.");
         }
     }
+
+    public Member getMemberByPrincipal_username(String principal_username)
+    {
+        //권한 검증을 위해 사용자의 이름을 가지고 Member 객체를 가져옴.
+        Optional<Member> memberByUsername = memberService.getMemberByUsername(principal_username);
+
+        if(memberByUsername.isPresent())
+        {
+            return memberByUsername.get();
+        }
+        else
+        {
+            //예외처리
+            throw new DataNotFoundException("받아온 사용자 이름값으로는 데이터를 불러올 수 없습니다.");
+        }
+    }
+
+
 }

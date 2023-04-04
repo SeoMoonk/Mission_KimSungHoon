@@ -1,16 +1,20 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
+import com.ll.gramgram.DataNotFoundException;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
+import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +26,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/likeablePerson")
 @RequiredArgsConstructor
 public class LikeablePersonController {
+
     private final Rq rq;
     private final LikeablePersonService likeablePersonService;
+    private final MemberService memberService;
 
     @GetMapping("/add")
     public String showAdd() {
@@ -67,16 +74,34 @@ public class LikeablePersonController {
     }
 
 
-    @PreAuthorize("isAuthenticated()")      //로그인된 사용자만 가능(권한이 있어야 가능)
+    @PreAuthorize("isAuthenticated()")      //로그인된 사용자만 이용가능
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id)  //아이디를 받아와서 GET 요청을 수행.
+    public String delete(@PathVariable("id") Long id, Principal principal)  //권한, 아이디를 받아와서 GET 요청을 수행.
     {
+        //삭제할 객체를 id를 통해 얻어옴.
+        LikeablePerson deletePersonById = this.likeablePersonService.getLikeablePersonById(id);
 
-        //서비스에 삭제 요청
-        likeablePersonService.like_deleteById(id);
+        //권한 검증을 위해 로그인한 사용자의 username을 통해 Member 객체를 얻어옴.
+        Member login_member = this.likeablePersonService.getMemberByPrincipal_username(principal.getName());
 
-        return rq.redirectWithMsg("/likeablePerson/list","삭제가 완료되었습니다.");
+        //얻어온 Member 객체에는 instamember 과의 관계가 있고(1:1), 해당 내용을 가지고 있음.
+        String login_instaname = login_member.getInstaMember().getUsername();
+
+        //현재 로그인한 사용자가 해당 항목을 삭제할 권한이 있는지(자신이 직접 삭제하는지) 확인.
+        //삭제하려는 내용의 FromInstaMember의 이름이 == 현재 로그인한 사용자의 InstaMember 이름과 같은가?
+        if(deletePersonById.getFromInstaMember().getUsername().equals(login_instaname))
+        {
+            //권한이 있다면?
+            //서비스에 삭제 요청
+            likeablePersonService.like_deleteById(id);
+
+            //삭제 후 다시 호감목록 페이지로 돌아옴.
+            return rq.redirectWithMsg("/likeablePerson/list","삭제가 완료되었습니다.");
+        }
+        else
+        {
+            //권한이 없다면 => 접근 거부 처리. (삭제하지 못함)
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
     }
-
-
 }

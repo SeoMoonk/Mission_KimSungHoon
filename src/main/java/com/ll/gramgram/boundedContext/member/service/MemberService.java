@@ -17,7 +17,6 @@ import java.util.Optional;
 @Transactional(readOnly = true) // 아래 메서드들이 전부 readonly 라는 것을 명시, 나중을 위해
 public class MemberService {
     private final PasswordEncoder passwordEncoder;
-
     private final MemberRepository memberRepository;
 
     public Optional<Member> findByUsername(String username) {
@@ -79,4 +78,10 @@ public class MemberService {
         // 소셜 로그인를 통한 가입시 비번은 없다. -> 로그인 수행
         return join(providerTypeCode, username, ""); // 최초 로그인 시 딱 한번 실행
     }
+
+    public Optional<Member> getMemberByUsername(String username)
+    {
+        return this.memberRepository.findByUsername(username);
+    }
+
 }

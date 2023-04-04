@@ -21,6 +21,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Getter
 public class InstaMember {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
