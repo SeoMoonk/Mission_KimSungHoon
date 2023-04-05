@@ -88,7 +88,7 @@ public class LikeablePersonController {
         String login_instaname = login_member.getInstaMember().getUsername();
 
         //현재 로그인한 사용자가 해당 항목을 삭제할 권한이 있는지(자신이 직접 삭제하는지) 확인.
-        //삭제하려는 내용의 FromInstaMember의 이름이 == 현재 로그인한 사용자의 InstaMember 이름과 같은가?
+        //삭제하려는 내용의 FromInstaMember 의 이름이 == 현재 로그인한 사용자의 InstaMember 이름과 같은가?
         if(deletePersonById.getFromInstaMember().getUsername().equals(login_instaname))
         {
             //권한이 있다면?

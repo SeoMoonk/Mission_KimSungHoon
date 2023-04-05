@@ -1,21 +1,29 @@
 spring:
   profiles:
     active: dev
+    include: oauth
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
-    username: seomoon
-    password: asas3052
+    username:
+    password:
   security:
     oauth2:
       client:
         registration:
           kakao:
-            clientId: c58c4271bbf605c05c2298c22c032f63
+            clientId:
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            client-authentication-method: POST
+          google:
+            clientId:
+            scope:
+            client-name: Google
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
             client-authentication-method: POST
         provider:
           kakao:
