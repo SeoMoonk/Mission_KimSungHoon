@@ -78,10 +78,6 @@ public class LikeablePersonService {
 
         InstaMember toInstaMember = deletePerson.getToInstaMember();
 
-        //(ManyToMany 관계)외래키 연결에서 떼어놓기 위함.
-        deletePerson.setFromInstaMember(null);
-        deletePerson.setToInstaMember(null);
-
         //좋아했던 관계 삭제
         likeablePersonRepository.deleteById(deletePerson.getId());
 
