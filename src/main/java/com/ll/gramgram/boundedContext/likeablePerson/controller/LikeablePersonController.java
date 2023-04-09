@@ -18,10 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -37,6 +34,7 @@ public class LikeablePersonController {
     private final LikeablePersonService likeablePersonService;
     private final MemberService memberService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/add")
     public String showAdd() {
         return "usr/likeablePerson/add";
@@ -49,6 +47,7 @@ public class LikeablePersonController {
         private final int attractiveTypeCode;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public String add(@Valid AddForm addForm) {
         RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
@@ -60,6 +59,7 @@ public class LikeablePersonController {
         return rq.redirectWithMsg("/likeablePerson/list", createRsData);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public String showList(Model model) {
         InstaMember instaMember = rq.getMember().getInstaMember();
@@ -74,34 +74,21 @@ public class LikeablePersonController {
     }
 
 
-    @PreAuthorize("isAuthenticated()")      //로그인된 사용자만 이용가능
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, Principal principal)  //권한, 아이디를 받아와서 GET 요청을 수행.
-    {
-        //삭제할 객체를 id를 통해 얻어옴.
-        LikeablePerson deletePersonById = this.likeablePersonService.getLikeablePersonById(id);
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id) {
+        LikeablePerson likeablePerson = likeablePersonService.getLikeablePersonById(id);
 
-        //권한 검증을 위해 로그인한 사용자의 username을 통해 Member 객체를 얻어옴.
-        Member login_member = this.likeablePersonService.getMemberByPrincipal_username(principal.getName());
+        RsData canActorDeleteRsData = likeablePersonService.canActorDelete(rq.getMember(), likeablePerson);
 
-        //얻어온 Member 객체에는 instamember 과의 관계가 있고(1:1), 해당 내용을 가지고 있음.
-        String login_instaname = login_member.getInstaMember().getUsername();
+        if (canActorDeleteRsData.isFail())
+            return rq.historyBack(canActorDeleteRsData);
 
-        //현재 로그인한 사용자가 해당 항목을 삭제할 권한이 있는지(자신이 직접 삭제하는지) 확인.
-        //삭제하려는 내용의 FromInstaMember 의 이름이 == 현재 로그인한 사용자의 InstaMember 이름과 같은가?
-        if(deletePersonById.getFromInstaMember().getUsername().equals(login_instaname))
-        {
-            //권한이 있다면?
-            //서비스에 삭제 요청
-            likeablePersonService.like_deleteById(id);
+        RsData deleteRsData = likeablePersonService.delete(likeablePerson);
 
-            //삭제 후 다시 호감목록 페이지로 돌아옴.
-            return rq.redirectWithMsg("/likeablePerson/list","삭제가 완료되었습니다.");
-        }
-        else
-        {
-            //권한이 없다면 => 접근 거부 처리. (삭제하지 못함)
-            throw new AccessDeniedException("삭제 권한이 없습니다.");
-        }
+        if (deleteRsData.isFail())
+            return rq.historyBack(deleteRsData);
+
+        return rq.redirectWithMsg("/likeablePerson/list", deleteRsData);
     }
 }

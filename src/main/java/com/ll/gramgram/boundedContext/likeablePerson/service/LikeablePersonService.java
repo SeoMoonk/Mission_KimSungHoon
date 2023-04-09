@@ -7,12 +7,12 @@ import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
-import com.ll.gramgram.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,7 +21,6 @@ import java.util.Optional;
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
-    private final MemberService memberService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
@@ -69,46 +68,23 @@ public class LikeablePersonService {
         }
     }
 
-
-    @Transactional      //DB 작업으로 수행될 수 있도록
-    public void like_deleteById(Long id)
+    @Transactional
+    public RsData delete(LikeablePerson likeablePerson)
     {
-        //올바른 id 값으로 객체를 얻어올 수 있도록 한 메서드를 호출하여 객체를 얻음.
-        LikeablePerson deletePerson = getLikeablePersonById(id);
+        likeablePersonRepository.delete(likeablePerson);
 
-        InstaMember toInstaMember = deletePerson.getToInstaMember();
-
-        //좋아했던 관계 삭제
-        likeablePersonRepository.deleteById(deletePerson.getId());
-
-        //내가 좋아했던 사람이 회원가입 되지 않았던 의문의 사람이라면 (gender가 U 라면) -> 인스타 멤버에서도 삭제.
-        //단, 문제점 -> 의문의 사람을 이상하게도 나만 좋아하던게 아닐 수도 있다... 이 점은 나중에 추가하면 좋을듯...!
-        if (toInstaMember.getGender().equals("U"))
-        {
-            //필요없어진 인스타멤버 객체 삭제
-            instaMemberService.delete(toInstaMember);
-        }
-        else
-        {
-            //시스템 입출력보다는 예외처리로 만들어 주는게 좋지만.. 일단 생략
-            System.out.println("삭제하려던 사용자는 우리의 회원입니다!");
-        }
+        String likeCanceledUsername = likeablePerson.getToInstaMember().getUsername();
+        return RsData.of("S-1", "%s님에 대한 호감을 취소하였습니다.".formatted(likeCanceledUsername));
     }
 
 
-    public Member getMemberByPrincipal_username(String principal_username)
-    {
-        //권한 검증을 위해 사용자의 이름을 가지고 Member 객체를 가져옴.
-        Optional<Member> memberByUsername = memberService.getMemberByUsername(principal_username);
+    public RsData canActorDelete(Member actor, LikeablePerson likeablePerson) {
+        if (likeablePerson == null)
+            return RsData.of("F-1", "이미 삭제되었습니다.");
 
-        if(memberByUsername.isPresent())
-        {
-            return memberByUsername.get();
-        }
-        else
-        {
-            //예외처리
-            throw new DataNotFoundException("받아온 사용자 이름값으로는 데이터를 불러올 수 없습니다.");
-        }
+        if (!Objects.equals(actor.getInstaMember().getId(), likeablePerson.getFromInstaMember().getId()))
+            return RsData.of("F-2", "권한이 없습니다.");
+
+        return RsData.of("S-1", "삭제가능합니다.");
     }
 }
