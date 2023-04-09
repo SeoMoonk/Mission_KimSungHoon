@@ -16,19 +16,15 @@ spring:
       client:
         registration:
           kakao:
-            clientId: '카카오 클라이언트 ID'
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             client-authentication-method: POST
           google:
-            clientId: '구글 클라이언트 ID'
-            scope: profile, email
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             client-name: Google
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
-            client-authentication-method: POST
+            scope: profile
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
