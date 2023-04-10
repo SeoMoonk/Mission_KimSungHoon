@@ -48,10 +48,12 @@ public class LikeablePersonService {
             {
                 // CASE6 : 중복이지만 사유가 다를 경우에는 수정처리
                 if(list_attractiveTypeCode != attractiveTypeCode){
-                    //세터는 사용하지 않는것이 좋음. 그럼 HOW?
-                    toInstaMemberByList.setAttractiveTypeCode(attractiveTypeCode);
+                    toInstaMemberByList.modify_attractiveTypeCode(attractiveTypeCode);
                     System.out.println("호감 내용이 수정되었습니다.");
-                    return RsData.of("S-6", "호감 내용이 수정되었습니다.");
+                    System.out.printf("%s에 대한 호감사유를 %s에서 %s으로 변경합니다.\n",
+                            username, whatAttractiveTypeByCode(list_attractiveTypeCode), whatAttractiveTypeByCode(attractiveTypeCode));
+                    return RsData.of("S-6", "%s에 대한 호감사유를 %s에서 %s으로 변경합니다."
+                            .formatted(username, whatAttractiveTypeByCode(list_attractiveTypeCode), whatAttractiveTypeByCode(attractiveTypeCode)));
                 }
 
                 //중복인데 사유도 다르지 않을 경우
@@ -136,4 +138,14 @@ public class LikeablePersonService {
 
         return RsData.of("S-1", "삭제가능합니다.");
     }
+
+    //호감코드에 따라 어떤 내용인지를 얻어오는 메서드.
+    public String whatAttractiveTypeByCode(int attractiveTypeCode) {
+        return switch (attractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
 }
