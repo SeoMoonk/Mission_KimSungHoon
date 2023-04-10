@@ -27,6 +27,7 @@ public class LikeablePersonService {
 
         //내가 좋아하는 사람들 리스트
         List<LikeablePerson> like_list = member.getInstaMember().getFromLikeablePeople();
+        boolean isModifyDuplicate = false;
 
         if ( member.hasConnectedInstaMember() == false ) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
@@ -39,9 +40,24 @@ public class LikeablePersonService {
         // CASE4 : 중복으로 호감표시 금지
         for(int i=0; i<like_list.size(); i++)
         {
-            if(like_list.get(i).getToInstaMemberUsername().equals(username))
+            LikeablePerson toInstaMemberByList = like_list.get(i);
+            String toInstaMemberUsername = toInstaMemberByList.getToInstaMemberUsername();
+            int list_attractiveTypeCode = toInstaMemberByList.getAttractiveTypeCode();
+
+            if(toInstaMemberUsername.equals(username))
             {
+                // CASE6 : 중복이지만 사유가 다를 경우에는 수정처리
+                if(list_attractiveTypeCode != attractiveTypeCode){
+                    //세터는 사용하지 않는것이 좋음. 그럼 HOW?
+                    toInstaMemberByList.setAttractiveTypeCode(attractiveTypeCode);
+                    System.out.println("호감 내용이 수정되었습니다.");
+                    return RsData.of("S-6", "호감 내용이 수정되었습니다.");
+                }
+
+                //중복인데 사유도 다르지 않을 경우
+                System.out.println("이미 호감으로 등록된 회원입니다.");
                 return RsData.of("F-4", "%s : 이미 호감으로 등록된 회원입니다.".formatted(username));
+
             }
         }
 
@@ -51,10 +67,6 @@ public class LikeablePersonService {
             System.out.println("호감 등록은 10명까지만 가능합니다.");
             return RsData.of("F-5", "호감 등록은 10명 까지만 가능합니다.");
         }
-
-
-        //중복으로 호감표시 할 경우 수정
-
 
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
