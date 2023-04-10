@@ -25,6 +25,9 @@ public class LikeablePersonService {
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
 
+        //내가 좋아하는 사람들 리스트
+        List<LikeablePerson> like_list = member.getInstaMember().getFromLikeablePeople();
+
         if ( member.hasConnectedInstaMember() == false ) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
@@ -33,12 +36,7 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
-        // T-1 중복으로 호감표시 금지
-
-        //내가 좋아하는 사람들 리스트
-        List<LikeablePerson> like_list = member.getInstaMember().getFromLikeablePeople();
-
-        //내가 좋아하는 사람들 리스트에서 이번에 들어온 사람의 이름과 일치하는 사람이 발견된다면?
+        // CASE4 : 중복으로 호감표시 금지
         for(int i=0; i<like_list.size(); i++)
         {
             if(like_list.get(i).getToInstaMemberUsername().equals(username))
@@ -47,10 +45,16 @@ public class LikeablePersonService {
             }
         }
 
+        // CASE5 : 호감 등록은 10명까지 가능
+        if(like_list.size() >= 10)
+        {
+            System.out.println("호감 등록은 10명까지만 가능합니다.");
+            return RsData.of("F-5", "호감 등록은 10명 까지만 가능합니다.");
+        }
+
 
         //중복으로 호감표시 할 경우 수정
 
-        // 10명까지만 호감 등록 가능
 
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();

@@ -18,7 +18,6 @@
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
         <script th:inline="javascript">
             const myInstaMemberUsername = /*[[ ${@rq.member.instaMember.username} ]]*/ null;
-            const myLikeableList = /*[[ ${@rq.member.instamember.fromlikeablepeople} ]]*/ null;
 
             function AddForm__submit(form) {
                 // username 이(가) 올바른지 체크
@@ -36,17 +35,6 @@
                     form.username.focus();
                     return;
                 }
-
-                //오류 메세지 보류
-                // //중복대상 불가능 (이번에 들어온 값이 지금까지 들어온 값들 중에 하나라면)
-                // for(var i=0; i<myLikeableList; i++){
-                //     if(form.username.value === myLikeableList.valueOf(i)) {
-                //         toastWarning('본인을 호감상대로 등록할 수 없습니다.');
-                //         form.username.focus();
-                //         return;
-                //     }
-                // }
-
 
                 if (form.username.value === myInstaMemberUsername) {
                     toastWarning('본인을 호감상대로 등록할 수 없습니다.');
