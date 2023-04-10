@@ -33,6 +33,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
 
+        //로그인 타입이 네이버일 경우 JSON(Map) 형식에서 id만 추출
+        if(providerTypeCode.equals("NAVER"))
+        {
+            Map<String, Object> response = (Map<String, Object>) oAuth2User.getAttributes().get("response");
+            oauthId = response.get("id").toString();
+        }
+
         String username = providerTypeCode + "__%s".formatted(oauthId);
 
         Member member = memberService.whenSocialLogin(providerTypeCode, username).getData();
