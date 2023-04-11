@@ -16,12 +16,13 @@
     </th:block>
 
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
+        <br/>
         <ul>
             <li th:each="likeablePerson: ${likeablePeople}">
                 <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
-                <span class="toInstaMember_attractiveTypeDisplayName"
+                <span class="toInstaMember_attractiveTypeDisplayName badge badge-secondary"
                       th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
-                <a href="javascript:;" onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();">삭제</a>
+                <a href="javascript:;" onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();" class="btn btn-xs btn-square">X</a>
                 <form hidden th:action="@{|/likeablePerson/${likeablePerson.id}|}" method="POST">
                     <input type="hidden" name="_method" value="delete">
                 </form>
