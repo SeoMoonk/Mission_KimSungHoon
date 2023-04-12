@@ -27,11 +27,10 @@ spring:
             scope: profile
           naver:
             redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            authorization-grant-type: authorization_code
             client-name: Naver
             scope:
               - name
-              - email
-            authorization-grant-type: authorization_code
 
         provider:
           kakao:
@@ -59,3 +58,8 @@ logging:
     com.ll.gramgram: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
+
+custom:
+  likeablePerson:
+    from:
+      max: 10

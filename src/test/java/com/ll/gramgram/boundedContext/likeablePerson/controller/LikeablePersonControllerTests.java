@@ -217,31 +217,7 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is4xxClientError())
         ;
 
-//        assertThat(likeablePersonService.getLikeablePersonById(1L);
-    }
-
-    @Test
-    @DisplayName("한 명의 인스타 회원이 다른 인스타 회원에게 중복으로 호감 표시를 할 수 없습니다.")
-    void t009() {
-
-
-
-    }
-
-    @Test
-    @DisplayName("한 명의 인스타 회원이 다른 인스타 회원에게 중복으로 호감 표시를 할 수 없습니다.")
-    void t010() {
-
-
-
-    }
-
-    @Test
-    @DisplayName("한 명의 인스타 회원이 다른 인스타 회원에게 중복으로 호감 표시를 할 수 없습니다.")
-    void t011() {
-
-
-
+        assertThat(likeablePersonService.getLikeablePersonById(1L));
     }
 
 }
