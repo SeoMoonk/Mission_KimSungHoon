@@ -84,8 +84,6 @@ public class LikeablePersonService {
         if (member.getInstaMember().getUsername().equals(username)) return 3;
 
         // F-4,6 : 중복으로 호감표시 금지
-
-
         for (LikeablePerson toInstaMemberByList : like_list)
         {
             String toInstaMemberUsername = toInstaMemberByList.getToInstaMemberUsername();
@@ -104,8 +102,6 @@ public class LikeablePersonService {
                 return 4;
             }
         }
-
-
 
         // F-5 : 호감 등록은 10명까지 가능 (count(size) 케이스는 modify 케이스보다 아래에 와야함.)
         if(like_list.size() >= AppConfig.getLikeablePersonFromMax())
