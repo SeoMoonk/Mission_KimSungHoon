@@ -79,8 +79,10 @@ public class LikeablePersonService {
             else
             {
                 int prev_attractiveTypeCode = likeablePerson.getAttractiveTypeCode();
-                modifyAttractive(likeablePerson, attractiveTypeCode);
+
                 //수정처리 메서드 별도로 호출하여 수행
+                modifyAttractive(likeablePerson, attractiveTypeCode);
+
                 return RsData.of("S-6", "(수정) %s에 대한 호감사유를 %s에서 %s으로 변경합니다."
                         .formatted(username, whatAttractiveTypeByCode(prev_attractiveTypeCode),
                                 whatAttractiveTypeByCode(attractiveTypeCode)));
