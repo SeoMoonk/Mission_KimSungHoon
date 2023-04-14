@@ -51,4 +51,9 @@ public class LikeablePerson {
             default -> "능력";
         };
     }
+
+    public void modify_attractiveTypeCode(int attractiveTypeCode) {
+        this.attractiveTypeCode = attractiveTypeCode;
+        this.modifyDate = LocalDateTime.now();
+    }
 }

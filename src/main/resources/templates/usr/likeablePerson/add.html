@@ -18,11 +18,21 @@
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
         <script th:inline="javascript">
             const myInstaMemberUsername = /*[[ ${@rq.member.instaMember.username} ]]*/ null;
+            const fromLikeableSize =  /*[[ ${#lists.size(@rq.member.instaMember.fromLikeablePeople)} ]]*/ null;
 
             function AddForm__submit(form) {
                 // username 이(가) 올바른지 체크
 
                 form.username.value = form.username.value.trim(); // 입력란의 입력값에 있을지 모르는 좌우공백제거
+
+                if(myInstaMemberUsername === form.username.value)
+
+
+                if(fromLikeableSize >= 10) {
+                    toastWarning('최대 10명까지만 호감 표시가 가능합니다.');
+                    form.username.focus();
+                    return;
+                }
 
                 if (form.username.value.length === 0) {
                     toastWarning('상대방의 인스타그램 아이디를 입력해주세요.');
@@ -60,7 +70,7 @@
                 당신의 인스타ID : <span class="badge" th:text="${@rq.member.instaMember.username}"></span>
             </div>
             <div>
-                <input type="text" name="username" autocomplete="off" maxlength="30" placeholder="상대방의 인스타그램 아이디"
+                <input type="text" name="username" maxlength="30" placeholder="상대방의 인스타그램 아이디"
                        class="input input-bordered">
             </div>
             <div>

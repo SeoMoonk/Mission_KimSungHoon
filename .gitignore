@@ -38,3 +38,5 @@ out/
 
 ### OAuth2 ###
 src/main/resources/application-oauth.yml
+
+src/main/generated

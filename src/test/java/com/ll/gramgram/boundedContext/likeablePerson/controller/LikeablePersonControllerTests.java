@@ -217,6 +217,7 @@ public class LikeablePersonControllerTests {
                 .andExpect(status().is4xxClientError())
         ;
 
-//        assertThat(likeablePersonService.getLikeablePersonById(1L);
+        assertThat(likeablePersonService.getLikeablePersonById(1L));
     }
+
 }

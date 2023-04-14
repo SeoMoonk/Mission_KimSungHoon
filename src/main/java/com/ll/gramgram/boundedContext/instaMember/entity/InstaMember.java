@@ -41,14 +41,14 @@ public class InstaMember {
     @Setter
     private String gender;
 
-    //내가 좋아하는 사람들을 모아둠. (상대가 사라지면, 내가 좋아했던 내용도 사라짐.)
+    //내가 좋아했던 사람들을 모아둠.
     @OneToMany(mappedBy = "toInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc")
     @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default
     private List<LikeablePerson> toLikeablePeople = new ArrayList<>();
 
-    //나를 좋아하는 사람들을 모아둠. (내가 사라지면, 나를 좋아했던 사람들에게서도 사라짐.)
+    //내가 좋아하는 사람들을 모아둠.
     @OneToMany(mappedBy = "fromInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc") //정렬
     @LazyCollection(LazyCollectionOption.EXTRA)
