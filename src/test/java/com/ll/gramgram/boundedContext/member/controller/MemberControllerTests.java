@@ -4,6 +4,7 @@ package com.ll.gramgram.boundedContext.member.controller;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -218,4 +222,21 @@ public class MemberControllerTests {
                         user1님 환영합니다.
                         """.stripIndent().trim())));
     }
+
+    //    @Test
+//    public void testConnection() throws Exception {
+//
+//        Class.forName("org.mariadb.jdbc.Driver");
+//
+//        Connection connection = DriverManager.getConnection(
+//                "jdbc:mariadb://localhost:3306/gram__dev",
+//                "",
+//                "");
+//
+//        Assertions.assertNotNull(connection);
+//
+//        connection.close();
+//    }
+
+
 }
