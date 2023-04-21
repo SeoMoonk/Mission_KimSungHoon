@@ -118,7 +118,7 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData delete(LikeablePerson likeablePerson)
+    public RsData cancel(LikeablePerson likeablePerson)
     {
 //        likeablePerson.getFromInstaMember().removeFromLikeablePerson(likeablePerson);
 //
@@ -130,7 +130,7 @@ public class LikeablePersonService {
         return RsData.of("S-1", "%s님에 대한 호감을 취소하였습니다.".formatted(likeCanceledUsername));
     }
 
-    public RsData canActorDelete(Member actor, LikeablePerson likeablePerson)
+    public RsData canCancel(Member actor, LikeablePerson likeablePerson)
     {
         if (likeablePerson == null)
             return RsData.of("F-1", "이미 삭제되었습니다.");
