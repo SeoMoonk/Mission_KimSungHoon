@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Enumeration;
 
@@ -24,6 +25,7 @@ public class HomeController {
     //세션 내용에 대한 디버그 나타내기(세션 내용 출력하기)
     @GetMapping("/debugSession")
     @ResponseBody
+    @PreAuthorize("hasAuthority('admin')")
     public String showDebugSession(HttpSession session) {
         StringBuilder sb = new StringBuilder("Session content:\n");
 
@@ -39,7 +41,9 @@ public class HomeController {
         return sb.toString().replaceAll("\n", "<br>");
     }
 
+
     @GetMapping("/historyBackTest")
+    @PreAuthorize("hasAuthority('admin')")
     public String showHistoryBackTest(HttpSession session)
     {
         return rq.historyBack("접근 금지 구역입니다.");
