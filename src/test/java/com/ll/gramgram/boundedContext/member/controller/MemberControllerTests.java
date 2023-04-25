@@ -4,7 +4,6 @@ package com.ll.gramgram.boundedContext.member.controller;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -45,7 +41,7 @@ public class MemberControllerTests {
     void t001() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/member/join"))
+                .perform(get("/usr/member/join"))
                 .andDo(print()); // 크게 의미 없고, 그냥 확인용
 
         // THEN
@@ -60,7 +56,7 @@ public class MemberControllerTests {
                         <input type="password" name="password"
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="submit" value="회원가입"
+                        id="btn-join-1"
                         """.stripIndent().trim())));
     }
 
@@ -70,7 +66,7 @@ public class MemberControllerTests {
     void t002() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/member/join")
+                .perform(post("/usr/member/join")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "user10")
                         .param("password", "1234")
@@ -82,7 +78,7 @@ public class MemberControllerTests {
                 .andExpect(handler().handlerType(MemberController.class))
                 .andExpect(handler().methodName("join"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/member/login?msg=**"));
+                .andExpect(redirectedUrlPattern("/usr/member/login?msg=**"));
 
         Member member = memberService.findByUsername("user10").orElse(null);
 
@@ -94,7 +90,7 @@ public class MemberControllerTests {
     void t003() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/member/join")
+                .perform(post("/usr/member/join")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "user10")
                 )
@@ -108,7 +104,7 @@ public class MemberControllerTests {
 
         // WHEN
         resultActions = mvc
-                .perform(post("/member/join")
+                .perform(post("/usr/member/join")
                         .with(csrf()) // CSRF 키 생성
                         .param("password", "1234")
                 )
@@ -122,7 +118,7 @@ public class MemberControllerTests {
 
         // WHEN
         resultActions = mvc
-                .perform(post("/member/join")
+                .perform(post("/usr/member/join")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "user10" + "a".repeat(30))
                         .param("password", "1234")
@@ -137,7 +133,7 @@ public class MemberControllerTests {
 
         // WHEN
         resultActions = mvc
-                .perform(post("/member/join")
+                .perform(post("/usr/member/join")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "user10")
                         .param("password", "1234" + "a".repeat(30))
@@ -156,7 +152,7 @@ public class MemberControllerTests {
     void t004() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/member/login"))
+                .perform(get("/usr/member/login"))
                 .andDo(print());
 
         // THEN
@@ -181,7 +177,7 @@ public class MemberControllerTests {
     void t005() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/member/login")
+                .perform(post("/usr/member/login")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "user1")
                         .param("password", "1234")
@@ -210,7 +206,7 @@ public class MemberControllerTests {
     void t006() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/member/me"))
+                .perform(get("/usr/member/me"))
                 .andDo(print());
 
         // THEN
@@ -222,21 +218,4 @@ public class MemberControllerTests {
                         0002
                         """.stripIndent().trim())));
     }
-
-    //    @Test
-//    public void testConnection() throws Exception {
-//
-//        Class.forName("org.mariadb.jdbc.Driver");
-//
-//        Connection connection = DriverManager.getConnection(
-//                "jdbc:mariadb://localhost:3306/gram__dev",
-//                "",
-//                "");
-//
-//        Assertions.assertNotNull(connection);
-//
-//        connection.close();
-//    }
-
-
 }
