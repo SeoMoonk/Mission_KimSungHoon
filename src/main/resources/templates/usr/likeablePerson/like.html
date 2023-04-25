@@ -55,7 +55,7 @@
                 const $checkedAttractiveTypeCodeRadioButton = $(form).find("[name=attractiveTypeCode]:checked");
 
                 if ($checkedAttractiveTypeCodeRadioButton.length === 0) {
-                    toastWarning('상대방의 매력포인트를 선택해주세요.');
+                    toastWarning('상대방의 호감사유를 선택해주세요.');
                     $(form).find("[name=attractiveTypeCode]:first").focus();
                     return;
                 }
@@ -101,7 +101,7 @@
                 </div>
                 <div class="form-control">
                     <label class="label">
-                        <span class="label-text">매력포인트</span>
+                        <span class="label-text">호감사유</span>
                     </label>
                     <!-- 라벨을 클릭하면 라벨의 하위요소인 버튼(체크,라디오,일반 등)이 클릭되는 효과) -->
                     <div class="flex justify-center gap-4">
