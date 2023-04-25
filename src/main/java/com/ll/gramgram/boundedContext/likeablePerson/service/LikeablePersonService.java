@@ -176,9 +176,34 @@ public class LikeablePersonService {
        likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
     }
 
-    private RsData<LikeablePerson> modifyAttractive(Member member, String username, int attractiveTypeCode) {
+    @Transactional
+    public RsData<LikeablePerson> modifyAttractive(Member actor, Long id, int attractiveTypeCode) {
+
+        LikeablePerson likeablePersonById = getLikeablePersonById(id);
+
+        return modifyAttractive(actor, likeablePersonById, attractiveTypeCode);
+    }
+
+    private RsData<LikeablePerson> modifyAttractive(Member actor, LikeablePerson likeablePerson, int attractiveTypeCode) {
+        RsData canModifyRsData = canModifyLike(actor, likeablePerson);
+
+        if (canModifyRsData.isFail()) {
+            return canModifyRsData;
+        }
+
+        String oldAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
+        String username = likeablePerson.getToInstaMember().getUsername();
+
+        modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
+
+        String newAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
+
+        return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), likeablePerson);
+    }
+
+    public RsData<LikeablePerson> modifyAttractive(Member actor, String username, int attractiveTypeCode) {
         // 액터가 생성한 `좋아요` 들 가져오기
-        List<LikeablePerson> fromLikeablePeople = member.getInstaMember().getFromLikeablePeople();
+        List<LikeablePerson> fromLikeablePeople = actor.getInstaMember().getFromLikeablePeople();
 
         LikeablePerson fromLikeablePerson = fromLikeablePeople
                 .stream()
@@ -190,13 +215,7 @@ public class LikeablePersonService {
             return RsData.of("F-7", "호감표시를 하지 않았습니다.");
         }
 
-        String oldAttractiveTypeDisplayName = fromLikeablePerson.getAttractiveTypeDisplayName();
-
-        modifyAttractionTypeCode(fromLikeablePerson, attractiveTypeCode);
-
-        String newAttractiveTypeDisplayName = fromLikeablePerson.getAttractiveTypeDisplayName();
-
-        return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), fromLikeablePerson);
+        return modifyAttractive(actor, fromLikeablePerson, attractiveTypeCode);
     }
 
     @Transactional
