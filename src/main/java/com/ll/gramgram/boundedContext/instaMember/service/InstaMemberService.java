@@ -4,6 +4,7 @@ import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMemberSnapshot;
 import com.ll.gramgram.boundedContext.instaMember.repository.InstaMemberRepository;
+import com.ll.gramgram.boundedContext.instaMember.repository.InstaMemberSnapshotRepository;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
