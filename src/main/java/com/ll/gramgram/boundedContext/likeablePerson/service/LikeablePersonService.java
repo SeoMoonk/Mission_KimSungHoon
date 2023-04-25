@@ -49,6 +49,8 @@ public class LikeablePersonService {
         //(상대 입장)나를 좋아해주는 사람이 생겼다.
         toInstaMember.addToLikeablePerson(likeablePerson);
 
+        toInstaMember.increaseLikesCount(fromInstaMember.getGender(), attractiveTypeCode);
+
         //정상처리
         return canILikeRsData;
     }
@@ -123,6 +125,8 @@ public class LikeablePersonService {
 //        likeablePerson.getFromInstaMember().removeFromLikeablePerson(likeablePerson);
 //
 //        likeablePerson.getToInstaMember().removeToLikeablePerson(likeablePerson);
+
+        likeablePerson.getToInstaMember().decreaseLikesCount(likeablePerson.getFromInstaMember().getGender(), likeablePerson.getAttractiveTypeCode());
 
         likeablePersonRepository.delete(likeablePerson);
 
