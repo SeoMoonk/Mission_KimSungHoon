@@ -2,6 +2,9 @@ package com.ll.gramgram.boundedContext.likeablePerson.service;
 
 import com.ll.gramgram.DataNotFoundException;
 import com.ll.gramgram.base.appConfig.AppConfig;
+import com.ll.gramgram.base.event.EventAfterLike;
+import com.ll.gramgram.base.event.EventAfterModifyAttractiveType;
+import com.ll.gramgram.base.event.EventBeforeCancelLike;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -9,6 +12,7 @@ import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,7 @@ public class LikeablePersonService {
 
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public RsData<LikeablePerson> like(Member actor, String username, int attractiveTypeCode)
@@ -49,7 +54,7 @@ public class LikeablePersonService {
         //(상대 입장)나를 좋아해주는 사람이 생겼다.
         toInstaMember.addToLikeablePerson(likeablePerson);
 
-        toInstaMember.increaseLikesCount(fromInstaMember.getGender(), attractiveTypeCode);
+        publisher.publishEvent(new EventAfterLike(this, likeablePerson));
 
         //정상처리
         return canILikeRsData;
@@ -126,7 +131,7 @@ public class LikeablePersonService {
 //
 //        likeablePerson.getToInstaMember().removeToLikeablePerson(likeablePerson);
 
-        likeablePerson.getToInstaMember().decreaseLikesCount(likeablePerson.getFromInstaMember().getGender(), likeablePerson.getAttractiveTypeCode());
+        publisher.publishEvent(new EventBeforeCancelLike(this, likeablePerson));
 
         likeablePersonRepository.delete(likeablePerson);
 
@@ -171,6 +176,29 @@ public class LikeablePersonService {
        likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
     }
 
+    private RsData<LikeablePerson> modifyAttractive(Member member, String username, int attractiveTypeCode) {
+        // 액터가 생성한 `좋아요` 들 가져오기
+        List<LikeablePerson> fromLikeablePeople = member.getInstaMember().getFromLikeablePeople();
+
+        LikeablePerson fromLikeablePerson = fromLikeablePeople
+                .stream()
+                .filter(e -> e.getToInstaMember().getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        if (fromLikeablePerson == null) {
+            return RsData.of("F-7", "호감표시를 하지 않았습니다.");
+        }
+
+        String oldAttractiveTypeDisplayName = fromLikeablePerson.getAttractiveTypeDisplayName();
+
+        modifyAttractionTypeCode(fromLikeablePerson, attractiveTypeCode);
+
+        String newAttractiveTypeDisplayName = fromLikeablePerson.getAttractiveTypeDisplayName();
+
+        return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), fromLikeablePerson);
+    }
+
     @Transactional
     public RsData<LikeablePerson> modifyLike(Member actor, Long id, int attractiveTypeCode) {
         LikeablePerson likeablePerson = getLikeablePersonById(id);
@@ -180,9 +208,18 @@ public class LikeablePersonService {
             return canModifyRsData;
         }
 
-        likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
+        modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
 
         return RsData.of("S-1", "호감사유를 수정하였습니다.");
+    }
+
+    private void modifyAttractionTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
+        int oldAttractiveTypeCode = likeablePerson.getAttractiveTypeCode();
+        RsData rsData = likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
+
+        if (rsData.isSuccess()) {
+            publisher.publishEvent(new EventAfterModifyAttractiveType(this, likeablePerson, oldAttractiveTypeCode, attractiveTypeCode));
+        }
     }
 
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
