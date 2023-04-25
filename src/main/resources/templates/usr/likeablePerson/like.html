@@ -34,8 +34,8 @@
                     return;
                 }
 
-                if (form.username.value.length < 4) {
-                    toastWarning('상대방의 인스타그램 아이디를 4자 이상 입력해주세요.');
+                if (form.username.value.length < 3) {
+                    toastWarning('상대방의 인스타그램 아이디를 3자 이상 입력해주세요.');
                     form.username.focus();
                     return;
                 }
@@ -97,6 +97,7 @@
                     <label class="label">
                         <span class="label-text">호감사유</span>
                     </label>
+
                     <!-- 라벨을 클릭하면 라벨의 하위요소인 버튼(체크,라디오,일반 등)이 클릭되는 효과) -->
                     <div class="flex justify-center gap-4">
                         <label class="flex gap-2 items-center cursor-pointer">
@@ -123,19 +124,22 @@
                             </span>
                         </label>
                     </div>
+
                 </div>
+
                 <button id="btn-like-1" class="btn btn-block btn-primary gap-1">
                     <i class="fa-solid fa-heart-circle-plus"></i>
                     <span>호감표시</span>
                 </button>
             </form>
+
             <div class="text-center mt-4">
                 <a th:if="${@rq.member.hasConnectedInstaMember}" href="list" class="btn btn-link">호감목록</a>
                 <a th:if="${@rq.member.hasConnectedInstaMember}" href="/usr/member/me" class="btn btn-link">내 정보</a>
             </div>
+        </div>
     </th:block>
 </main>
 </body>
 
 </html>
-
