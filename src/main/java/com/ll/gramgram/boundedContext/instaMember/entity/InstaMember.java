@@ -72,7 +72,6 @@ public class InstaMember {
         return getLikesCountByGenderWoman() + getLikesCountByGenderMan();
     }
 
-
     //내가 좋아했던 사람들을 모아둠.
     @OneToMany(mappedBy = "toInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc")

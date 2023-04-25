@@ -168,7 +168,7 @@ public class LikeablePersonService {
 
     @Transactional
     public void modifyAttractive(LikeablePerson likeablePerson, int attractiveTypeCode) {
-       likeablePerson.modify_attractiveTypeCode(attractiveTypeCode);
+       likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
     }
 
     @Transactional
@@ -180,7 +180,7 @@ public class LikeablePersonService {
             return canModifyRsData;
         }
 
-        likeablePerson.modify_attractiveTypeCode(attractiveTypeCode);
+        likeablePerson.updateAttractionTypeCode(attractiveTypeCode);
 
         return RsData.of("S-1", "호감사유를 수정하였습니다.");
     }
