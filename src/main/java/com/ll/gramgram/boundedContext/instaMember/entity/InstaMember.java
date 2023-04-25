@@ -3,12 +3,11 @@ package com.ll.gramgram.boundedContext.instaMember.entity;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.AbstractAuditable_;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,14 +15,12 @@ import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@ToString
 @Entity
 @Getter
-public class InstaMember {
+@NoArgsConstructor
+@SuperBuilder
+@ToString(callSuper = true)
+public class InstaMember extends InstaMemberBase {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -38,40 +35,6 @@ public class InstaMember {
     @Column(unique = true)
     private String username;
 
-    @Setter
-    private String gender;
-
-    private long likesCountByGenderWomanAndAttractiveTypeCode1;
-    private long likesCountByGenderWomanAndAttractiveTypeCode2;
-    private long likesCountByGenderWomanAndAttractiveTypeCode3;
-    private long likesCountByGenderManAndAttractiveTypeCode1;
-    private long likesCountByGenderManAndAttractiveTypeCode2;
-    private long likesCountByGenderManAndAttractiveTypeCode3;
-
-    public Long getLikesCountByGenderWoman() {
-        return likesCountByGenderWomanAndAttractiveTypeCode1 + likesCountByGenderWomanAndAttractiveTypeCode2 + likesCountByGenderWomanAndAttractiveTypeCode3;
-    }
-
-    public Long getLikesCountByGenderMan() {
-        return likesCountByGenderManAndAttractiveTypeCode1 + likesCountByGenderManAndAttractiveTypeCode2 + likesCountByGenderManAndAttractiveTypeCode3;
-    }
-
-    public Long getLikesCountByAttractionTypeCode1() {
-        return likesCountByGenderWomanAndAttractiveTypeCode1 + likesCountByGenderManAndAttractiveTypeCode1;
-    }
-
-    public Long getLikesCountByAttractionTypeCode2() {
-        return likesCountByGenderWomanAndAttractiveTypeCode2 + likesCountByGenderManAndAttractiveTypeCode2;
-    }
-
-    public Long getLikesCountByAttractionTypeCode3() {
-        return likesCountByGenderWomanAndAttractiveTypeCode3 + likesCountByGenderManAndAttractiveTypeCode3;
-    }
-
-    public Long getLikes() {
-        return getLikesCountByGenderWoman() + getLikesCountByGenderMan();
-    }
-
     //내가 좋아했던 사람들을 모아둠.
     @OneToMany(mappedBy = "toInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc")
@@ -85,6 +48,11 @@ public class InstaMember {
     @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default // @Builder 가 있으면 ` = new ArrayList<>();` 가 작동하지 않는다. 그래서 이걸 붙여야 한다.
     private List<LikeablePerson> fromLikeablePeople = new ArrayList<>();
+
+    @OneToMany(mappedBy = "instaMember", cascade = {CascadeType.ALL})
+    @OrderBy("id desc") // 정렬
+    @Builder.Default
+    private List<InstaMemberSnapshot> instaMemberSnapshots = new ArrayList<>();
 
     public void addFromLikeablePerson(LikeablePerson likeablePerson) {
         fromLikeablePeople.add(0, likeablePerson);
@@ -116,6 +84,8 @@ public class InstaMember {
         if (gender.equals("M") && attractiveTypeCode == 1) likesCountByGenderManAndAttractiveTypeCode1++;
         if (gender.equals("M") && attractiveTypeCode == 2) likesCountByGenderManAndAttractiveTypeCode2++;
         if (gender.equals("M") && attractiveTypeCode == 3) likesCountByGenderManAndAttractiveTypeCode3++;
+
+        saveSnapshot();
     }
 
     public void decreaseLikesCount(String gender, int attractiveTypeCode) {
@@ -125,10 +95,14 @@ public class InstaMember {
         if (gender.equals("M") && attractiveTypeCode == 1) likesCountByGenderManAndAttractiveTypeCode1--;
         if (gender.equals("M") && attractiveTypeCode == 2) likesCountByGenderManAndAttractiveTypeCode2--;
         if (gender.equals("M") && attractiveTypeCode == 3) likesCountByGenderManAndAttractiveTypeCode3--;
+
+        saveSnapshot();
     }
 
     public boolean updateGender(String gender) {
         if (gender.equals(this.gender)) return false;
+
+        boolean oldIsNull = this.gender == null;
 
         String oldGender = this.gender;
 
@@ -142,7 +116,26 @@ public class InstaMember {
 
         this.gender = gender;
 
+        if(!oldIsNull){
+            saveSnapshot();
+        }
+
         return true;
+    }
+
+    public void saveSnapshot() {
+        InstaMemberSnapshot instaMemberSnapshot = InstaMemberSnapshot.builder()
+                .instaMember(this)
+                .username(username)
+                .likesCountByGenderWomanAndAttractiveTypeCode1(likesCountByGenderWomanAndAttractiveTypeCode1)
+                .likesCountByGenderWomanAndAttractiveTypeCode2(likesCountByGenderWomanAndAttractiveTypeCode2)
+                .likesCountByGenderWomanAndAttractiveTypeCode3(likesCountByGenderWomanAndAttractiveTypeCode3)
+                .likesCountByGenderManAndAttractiveTypeCode1(likesCountByGenderManAndAttractiveTypeCode1)
+                .likesCountByGenderManAndAttractiveTypeCode2(likesCountByGenderManAndAttractiveTypeCode2)
+                .likesCountByGenderManAndAttractiveTypeCode3(likesCountByGenderManAndAttractiveTypeCode3)
+                .build();
+
+        instaMemberSnapshots.add(instaMemberSnapshot);
     }
 
 }
