@@ -9,8 +9,7 @@ import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonServi
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +47,10 @@ public class LikeablePersonController {
         @NotBlank
         @Size(min = 3, max = 30)
         private final String username;
-        @NotBlank
-        @Size(min = 1, max = 1)
+
+        @NotNull
+        @Min(1)
+        @Max(3)
         private final int attractiveTypeCode;
     }
 
@@ -116,7 +117,12 @@ public class LikeablePersonController {
     @AllArgsConstructor
     @Getter
     public static class ModifyForm {
+
+        @NotNull
+        @Min(1)
+        @Max(3)
         private final int attractiveTypeCode;
+
     }
 
     @PreAuthorize("isAuthenticated()")
