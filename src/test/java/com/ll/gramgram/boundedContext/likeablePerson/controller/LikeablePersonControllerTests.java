@@ -1,7 +1,7 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 
-import com.ll.gramgram.base.Appconfig.AppConfig;
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;

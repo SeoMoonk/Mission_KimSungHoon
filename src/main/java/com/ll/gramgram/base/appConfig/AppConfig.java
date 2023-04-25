@@ -1,4 +1,4 @@
-package com.ll.gramgram.base.Appconfig;
+package com.ll.gramgram.base.appConfig;
 
 
 import lombok.Getter;
