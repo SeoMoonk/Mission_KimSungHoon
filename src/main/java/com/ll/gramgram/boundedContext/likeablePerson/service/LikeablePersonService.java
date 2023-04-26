@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -131,6 +132,7 @@ public class LikeablePersonService {
 //
 //        likeablePerson.getToInstaMember().removeToLikeablePerson(likeablePerson);
 
+
         publisher.publishEvent(new EventBeforeCancelLike(this, likeablePerson));
 
         likeablePersonRepository.delete(likeablePerson);
@@ -141,6 +143,7 @@ public class LikeablePersonService {
 
     public RsData canCancel(Member actor, LikeablePerson likeablePerson)
     {
+
         if (likeablePerson == null)
             return RsData.of("F-1", "이미 삭제되었습니다.");
 
@@ -152,6 +155,20 @@ public class LikeablePersonService {
 
         if (actorInstaMemberId != fromInstaMemberId)
             return RsData.of("F-2", "삭제 권한이 없습니다.");
+
+
+        //3시간 전이면 threeHoursAgo 라는 시간인데, 너 이 시간보다 전에 수정되었니?
+        LocalDateTime threeHoursAgo = LocalDateTime.now().minusHours(3);
+        LocalDateTime modifyDate = likeablePerson.getModifyDate();
+
+        //수정 일자가 3시간 전보다 더 이전인가?
+        int result = modifyDate.compareTo(threeHoursAgo);
+
+        //3시간이 아직 지나지 않았다. (두 시간을 비교했더니 후자가 더 빠르다.)
+        if(result > 0)
+        {
+            return RsData.of("F-6", "3시간 쿨타임 입니다.");
+        }
 
         return RsData.of("S-1", "삭제가능합니다.");
     }
@@ -250,6 +267,19 @@ public class LikeablePersonService {
 
         if (!Objects.equals(likeablePerson.getFromInstaMember().getId(), fromInstaMember.getId())) {
             return RsData.of("F-2", "해당 호감표시를 취소할 권한이 없습니다.");
+        }
+
+        //3시간 전이면 threeHoursAgo 라는 시간인데, 너 이 시간보다 전에 수정되었니?
+        LocalDateTime threeHoursAgo = LocalDateTime.now().minusHours(3);
+        LocalDateTime modifyDate = likeablePerson.getModifyDate();
+
+        //수정 일자가 3시간 전보다 더 이전인가?
+        int result = modifyDate.compareTo(threeHoursAgo);
+
+        //3시간이 아직 지나지 않았다. (두 시간을 비교했더니 후자가 더 빠르다.)
+        if(result > 0)
+        {
+            return RsData.of("F-6", "3시간 쿨타임 입니다.");
         }
 
         return RsData.of("S-1", "호감표시취소가 가능합니다.");
