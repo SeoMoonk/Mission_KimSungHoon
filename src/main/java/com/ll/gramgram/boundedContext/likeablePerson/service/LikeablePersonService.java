@@ -88,6 +88,13 @@ public class LikeablePersonService {
             {
                 int prev_attractiveTypeCode = likeablePerson.getAttractiveTypeCode();
 
+                //여기서도 수정할 수 있는지 체크하고, 막혀야 함.
+                RsData canModify_rsData = canModifyLike(actor, likeablePerson);
+
+                if(canModify_rsData.isFail()) {
+                    return canModify_rsData;
+                }
+
                 //수정처리 메서드 별도로 호출하여 수행
                 modifyAttractive(likeablePerson, attractiveTypeCode);
 
@@ -162,10 +169,10 @@ public class LikeablePersonService {
         LocalDateTime modifyDate = likeablePerson.getModifyDate();
 
         //수정 일자가 3시간 전보다 더 이전인가?
-        int result = modifyDate.compareTo(threeHoursAgo);
+        int cooldown = modifyDate.compareTo(threeHoursAgo);
 
         //3시간이 아직 지나지 않았다. (두 시간을 비교했더니 후자가 더 빠르다.)
-        if(result > 0)
+        if(cooldown > 0)
         {
             return RsData.of("F-6", "3시간 쿨타임 입니다.");
         }
@@ -259,6 +266,7 @@ public class LikeablePersonService {
     }
 
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
+
         if (!actor.hasConnectedInstaMember()) {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
