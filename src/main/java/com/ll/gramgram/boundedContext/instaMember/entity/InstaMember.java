@@ -22,16 +22,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @ToString(callSuper = true)
 public class InstaMember extends InstaMemberBase {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
-
     @Column(unique = true)
     private String username;
 
