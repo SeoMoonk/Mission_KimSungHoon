@@ -89,7 +89,10 @@
 
                     <script th:inline="javascript">
                         // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-                        $(`input[name=attractiveTypeCode][value=${inputValue__attractiveTypeCode}]:last`).prop('checked', true);
+                        // 호감 상태 변경시 이전의 내용은 미리 체크되어있고, 선택될 수 없다.
+                        $(`input[name=attractiveTypeCode][value=${inputValue__attractiveTypeCode}]:last`)
+                                .prop('checked', true)
+                                .prop('disabled', true);
                     </script>
                 </div>
 
