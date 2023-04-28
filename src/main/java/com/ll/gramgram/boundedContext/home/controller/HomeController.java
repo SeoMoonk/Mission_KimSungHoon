@@ -19,7 +19,19 @@ public class HomeController {
     //루트 페이지
     @GetMapping("/")
     public String showMain() {
-        return "usr/home/main";
+
+        //시작시에 로그인 되었으면 내 정보, 로그인 안되었으면 로그인 페이지로 이동
+
+        if (rq.isLogout()) {
+            return "redirect:/usr/member/login";
+        }
+
+        return "redirect:/usr/member/me";
+    }
+
+    @GetMapping("/usr/home/about")
+    public String showAbout() {
+        return "usr/home/about";
     }
 
     //세션 내용에 대한 디버그 나타내기(세션 내용 출력하기)
