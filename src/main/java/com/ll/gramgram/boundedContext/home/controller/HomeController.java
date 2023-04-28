@@ -37,7 +37,6 @@ public class HomeController {
     //세션 내용에 대한 디버그 나타내기(세션 내용 출력하기)
     @GetMapping("/usr/debugSession")
     @ResponseBody
-    @PreAuthorize("hasAuthority('admin')")
     public String showDebugSession(HttpSession session) {
         StringBuilder sb = new StringBuilder("Session content:\n");
 
