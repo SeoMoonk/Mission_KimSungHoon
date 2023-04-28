@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.likeablePerson.entity;
 
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
+import com.ll.gramgram.standard.util.Ut;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -61,6 +62,11 @@ public class LikeablePerson {
             default -> "능력";
         };
     }
+
+    public String getJdenticon() {
+        return Ut.hash.sha256(fromInstaMember.getId() + "_likes_" + toInstaMember.getId());
+    }
+
 
     public void modify_attractiveTypeCode(int attractiveTypeCode) {
         this.attractiveTypeCode = attractiveTypeCode;

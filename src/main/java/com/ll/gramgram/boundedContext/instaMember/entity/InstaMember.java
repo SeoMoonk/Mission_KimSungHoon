@@ -25,17 +25,13 @@ public class InstaMember extends InstaMemberBase {
     @Column(unique = true)
     private String username;
 
-    //내가 좋아했던 사람들을 모아둠.
     @OneToMany(mappedBy = "toInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc")
-    @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default
     private List<LikeablePerson> toLikeablePeople = new ArrayList<>();
 
-    //내가 좋아하는 사람들을 모아둠.
     @OneToMany(mappedBy = "fromInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc") //정렬
-    @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default // @Builder 가 있으면 ` = new ArrayList<>();` 가 작동하지 않는다. 그래서 이걸 붙여야 한다.
     private List<LikeablePerson> fromLikeablePeople = new ArrayList<>();
 
@@ -60,6 +56,13 @@ public class InstaMember extends InstaMemberBase {
             case "W" -> "여성";
             default -> "남성";
         };
+    }
+
+    public String getGenderDisplayNameWithIcon() {
+        return switch (gender) {
+            case "W" -> "<i class=\"fa-solid fa-person-dress\"></i>";
+            default -> "<i class=\"fa-solid fa-person\"></i>";
+        } + "&nbsp;" + getGenderDisplayName();
     }
 
     public void increaseLikesCount(String gender, int attractiveTypeCode) {
