@@ -90,9 +90,9 @@ public class LikeablePerson {
         return modifyUnlockDate.isBefore(LocalDateTime.now());
     }
 
-    //FIXME => 정확한 시간 반환이 가능하도록 (초 단위에서 올림)
+    //FIXME => 쿨타임 해제까지 필요한 시간이 정확히 반환 되도록 (초 단위에서 올림)
     public String getModifyUnlockDateRemainStrHuman() {
-        return "2시간 16분";
+        return "2시간 16분 후";
     }
 
 }

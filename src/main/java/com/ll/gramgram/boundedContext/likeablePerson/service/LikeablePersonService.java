@@ -11,6 +11,7 @@ import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -166,6 +167,18 @@ public class LikeablePersonService {
         if (actorInstaMemberId != fromInstaMemberId)
             return RsData.of("F-2", "삭제 권한이 없습니다.");
 
+        LocalDateTime modifyUnlockDate = likeablePerson.getModifyUnlockDate();
+
+        //현재 시간이 modifyUnlockDate(쿨타임 제한시간) 이 지나지 않은 시각이라면?
+        if(LocalDateTime.now().isBefore(modifyUnlockDate))
+        {
+            return RsData.of("F-3", "쿨타임 해제 시각 : (%s) 으로, 아직 (%s) 만큼 더 기다려야 합니다."
+                    .formatted(
+                            modifyUnlockDate.toString(),
+                            likeablePerson.getModifyUnlockDateRemainStrHuman()
+                    ));
+        }
+
         return RsData.of("S-1", "삭제가능합니다.");
     }
 
@@ -266,6 +279,20 @@ public class LikeablePersonService {
 
         if (!Objects.equals(likeablePerson.getFromInstaMember().getId(), fromInstaMember.getId())) {
             return RsData.of("F-2", "해당 호감표시를 취소할 권한이 없습니다.");
+        }
+
+        LocalDateTime modifyUnlockDate = likeablePerson.getModifyUnlockDate();
+
+        //현재 시간이 modifyUnlockDate(쿨타임 제한시간) 이 지나지 않은 시각이라면?
+        //수정, 삭제 버튼이 disabled 인 상태에서 확인하는 법 ->
+        // 1. 중복등록(호감사유 변경)     2. 테스트 케이스      3. Like 시에 TestUt 사용하여 강제변경
+        if(LocalDateTime.now().isBefore(modifyUnlockDate))
+        {
+            return RsData.of("F-3", "쿨타임 해제 시각 : (%s) 으로, 아직 (%s) 만큼 더 기다려야 합니다."
+                    .formatted(
+                            modifyUnlockDate.toString(),
+                            likeablePerson.getModifyUnlockDateRemainStrHuman()
+                    ));
         }
 
         return RsData.of("S-1", "호감표시취소가 가능합니다.");
