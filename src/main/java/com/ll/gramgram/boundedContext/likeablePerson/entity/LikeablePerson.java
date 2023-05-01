@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -90,9 +91,17 @@ public class LikeablePerson {
         return modifyUnlockDate.isBefore(LocalDateTime.now());
     }
 
-    //FIXME => 쿨타임 해제까지 필요한 시간이 정확히 반환 되도록 (초 단위에서 올림)
+    //FIXME => 시간 남으면 좀 더 섬세하게
     public String getModifyUnlockDateRemainStrHuman() {
-        return "2시간 16분 후";
+
+        LocalDateTime nowDate = LocalDateTime.now();
+        LocalDateTime modifyUnlockDate = this.getModifyUnlockDate();
+
+        Duration duration = Duration.between(nowDate, modifyUnlockDate);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+
+        return "%02d 시간 %02d 분 후".formatted(hours, minutes);
     }
 
 }
