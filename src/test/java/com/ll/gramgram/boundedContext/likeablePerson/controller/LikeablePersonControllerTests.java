@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 
 import com.ll.gramgram.base.appConfig.AppConfig;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
@@ -18,7 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.LongStream;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -89,7 +91,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(content().string(containsString("""
                         id="btn-like-1"
                         """.stripIndent().trim())));
-        ;
     }
 
     @Test
@@ -110,7 +111,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is3xxRedirection());
-        ;
     }
 
     @Test
@@ -131,7 +131,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is3xxRedirection());
-        ;
     }
 
     @Test
@@ -163,7 +162,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(content().string(containsString("""
                         id="btn-modify-like-1"
                         """.stripIndent().trim())));
-        ;
     }
 
     @Test
@@ -184,7 +182,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("modify"))
                 .andExpect(status().is3xxRedirection());
-        ;
     }
 
     @Test
@@ -213,7 +210,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(content().string(containsString("""
                         data-test="toInstaMember_attractiveTypeDisplayName=성격"
                         """.stripIndent().trim())));
-        ;
     }
 
     @Test
@@ -299,7 +295,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
-        ;
     }
 
     @Test
@@ -320,7 +315,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
-        ;
     }
 
     @Test
@@ -341,7 +335,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
-        ;
     }
 
     @Test
@@ -350,7 +343,7 @@ public class LikeablePersonControllerTests {
     void t012() throws Exception {
         Member memberUser5 = memberService.findByUsername("user5").get();
 
-        LongStream.range(0, AppConfig.getLikeablePersonFromMax())
+        IntStream.range(0, (int) AppConfig.getLikeablePersonFromMax())
                 .forEach(index -> {
                     likeablePersonService.like(memberUser5, "insta_user%30d".formatted(index), 1);
                 });
@@ -369,38 +362,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().handlerType(LikeablePersonController.class))
                 .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
-        ;
     }
 
-//    @Test
-//    @DisplayName("기존에 호감을 표시한 유저에게 새로운 사유로 호감을 표시하면 추가가 아니라 수정이 된다.")
-//    @WithUserDetails("user3")
-//    void t013() throws Exception {
-//        // WHEN
-//        ResultActions resultActions = mvc
-//                .perform(post("/usr/likeablePerson/like")
-//                        .with(csrf()) // CSRF 키 생성
-//                        .param("username", "insta_user4")
-//                        .param("attractiveTypeCode", "2")
-//                )
-//                .andDo(print());
-//
-//        // THEN
-//        resultActions
-//                .andExpect(handler().handlerType(LikeablePersonController.class))
-//                .andExpect(handler().methodName("like"))
-//                .andExpect(status().is3xxRedirection());
-//        ;
-//
-//        Optional<LikeablePerson> opLikeablePerson = likeablePersonService.findByFromInstaMember_usernameAndToInstaMember_username("insta_user3", "insta_user4");
-//
-//        likeablePersonService.findByFromInstaMemberId()
-//
-//
-//        int newAttractiveTypeCode = opLikeablePerson
-//                .map(LikeablePerson::getAttractiveTypeCode)
-//                .orElse(-1);
-//
-//        assertThat(newAttractiveTypeCode).isEqualTo(2);
-//    }
 }

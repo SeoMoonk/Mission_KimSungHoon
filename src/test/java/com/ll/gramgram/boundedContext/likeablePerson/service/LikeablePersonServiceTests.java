@@ -4,6 +4,7 @@ package com.ll.gramgram.boundedContext.likeablePerson.service;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
+import com.ll.gramgram.boundedContext.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 public class LikeablePersonServiceTests {
+
+    @Autowired
+    private MemberService memberService;
 
     @Autowired
     private LikeablePersonService likeablePersonService;
@@ -100,7 +104,7 @@ public class LikeablePersonServiceTests {
 
         if (oldLikeablePerson != null) {
             System.out.println("V4 : 중복으로 호감을 표시할 수 없습니다.");
-            System.out.println("V4 : 기존 호감사유 : %S".formatted(oldLikeablePerson.getAttractiveTypeDisplayName()));
+            System.out.printf("V4 : 기존 호감사유 : %s%n", oldLikeablePerson.getAttractiveTypeDisplayName());
         }
     }
 
