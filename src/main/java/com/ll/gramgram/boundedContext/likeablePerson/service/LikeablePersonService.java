@@ -58,6 +58,8 @@ public class LikeablePersonService {
 
         publisher.publishEvent(new EventAfterLike(this, likeablePerson));
 
+        canILikeRsData.setData(likeablePerson);
+
         //정상처리
         return canILikeRsData;
     }

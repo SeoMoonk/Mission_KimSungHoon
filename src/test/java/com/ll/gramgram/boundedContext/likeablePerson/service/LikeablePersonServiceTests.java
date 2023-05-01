@@ -131,18 +131,17 @@ public class LikeablePersonServiceTests {
 
         Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
 
-        //FIXME : 3번 회원이 BTS 에게 3번 코드로 호감을 표시 => RsData.getData() 시에 NULL 발생.
         LikeablePerson likeablePersonToBts = likeablePersonService.like(memberUser3, "bts", 3).getData();
 
         //쿨타임을 받아오는 것이 호감표시보다 먼저 시작됬는데, 시간차이가 잘 나는가? (미세한 초 단위)
-        //assertThat(likeablePersonToBts.getModifyUnlockDate().isAfter(coolDown)).isTrue();
+        assertThat(likeablePersonToBts.getModifyUnlockDate().isAfter(coolDown)).isTrue();
 
         //반대로
         LikeablePerson likeablePersonToBP = likeablePersonService.like(memberUser3, "BP", 1).getData(); //FIXME
 
         LocalDateTime coolDown2 = AppConfig.genLikeablePersonModifyUnlockDate();
 
-        //assertThat(likeablePersonToBP.getModifyUnlockDate().isAfter(coolDown2)).isFalse();
+        assertThat(likeablePersonToBP.getModifyUnlockDate().isAfter(coolDown2)).isFalse();
 
     }
 
@@ -154,7 +153,6 @@ public class LikeablePersonServiceTests {
 
         Member memberUser3 = memberService.findByUsername("user3").orElseThrow();
 
-        //FIXME : RsData.getDate => NULL
         LikeablePerson likeablePersonToBts = likeablePersonService.like(memberUser3, "bts", 3).getData();
 
         //호감 표시를 생성하고 난 직후에는 쿨타임 때문에 수정이 불가능 하기 때문에,
@@ -163,7 +161,7 @@ public class LikeablePersonServiceTests {
 
         likeablePersonService.modifyAttractive(memberUser3, likeablePersonToBts, 1);
 
-        //assertThat(likeablePersonToBts.getModifyUnlockDate().isAfter(coolDown)).isTrue();
+        assertThat(likeablePersonToBts.getModifyUnlockDate().isAfter(coolDown)).isTrue();
     }
 
 
