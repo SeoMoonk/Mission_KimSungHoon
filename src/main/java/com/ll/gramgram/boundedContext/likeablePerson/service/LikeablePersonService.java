@@ -45,6 +45,7 @@ public class LikeablePersonService {
                 .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
                 .toInstaMemberUsername(toInstaMember.getUsername())
                 .attractiveTypeCode(attractiveTypeCode)
+                .modifyUnlockDate(AppConfig.genLikeablePersonModifyUnlockDate())    //제한 해제시간 설정
                 .build();
 
         likeablePersonRepository.save(likeablePerson); // 저장

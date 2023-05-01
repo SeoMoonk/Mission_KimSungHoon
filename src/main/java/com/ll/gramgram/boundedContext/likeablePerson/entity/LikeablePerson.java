@@ -46,6 +46,8 @@ public class LikeablePerson {
 
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
 
+    private LocalDateTime modifyUnlockDate;   //제한 해제 시간
+
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {
         if (this.attractiveTypeCode == attractiveTypeCode) {
             return RsData.of("F-1", "이미 설정되었습니다.");
