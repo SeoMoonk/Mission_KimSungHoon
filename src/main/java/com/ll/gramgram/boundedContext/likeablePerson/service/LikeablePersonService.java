@@ -11,6 +11,7 @@ import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.notification.service.NotificationService;
 import com.ll.gramgram.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,6 +30,7 @@ public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
     private final ApplicationEventPublisher publisher;
+    private final NotificationService notificationService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member actor, String username, int attractiveTypeCode)
@@ -61,6 +63,12 @@ public class LikeablePersonService {
         publisher.publishEvent(new EventAfterLike(this, likeablePerson));
 
         canILikeRsData.setData(likeablePerson);
+
+        //누가, 누구를, 좋아한다는 내용으로(Like or ModifyAttractiveType),
+        //성별 바뀌지 않았음(null), 호감사유 변경이 아님(0), 새로운 성별 O ("M"), 새로운 호감 타입코드(TypeCode)
+        // + 베이스 엔티티 (id, createDate, modifyDate)
+        notificationService.createNotification(fromInstaMember, toInstaMember, "Like",
+                null, 0, "M", attractiveTypeCode);
 
         //정상처리
         return canILikeRsData;

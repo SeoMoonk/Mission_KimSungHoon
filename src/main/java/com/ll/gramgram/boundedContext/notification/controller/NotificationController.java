@@ -23,11 +23,18 @@ public class NotificationController {
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
     public String showList(Model model) {
+
         if (!rq.getMember().hasConnectedInstaMember()) {
             return rq.redirectWithMsg("/usr/instaMember/connect", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
 
+        //서비스에서 현재 접속한 유저의 인스타 계정을 통해 알릴만한 내용이 있는지 찾아서 model 로 넘겨줌.
         List<Notification> notifications = notificationService.findByToInstaMember(rq.getMember().getInstaMember());
+
+        for(int i=0; i<notifications.size(); i++)
+        {
+            System.out.println(notifications.get(i).toString());
+        }
 
         model.addAttribute("notifications", notifications);
 
