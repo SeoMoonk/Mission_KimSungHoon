@@ -85,4 +85,14 @@ public class LikeablePerson {
             default -> "<i class=\"fa-solid fa-people-roof\"></i>";
         } + "&nbsp;" + getAttractiveTypeDisplayName();
     }
+
+    public boolean isModifyUnlocked() {
+        return modifyUnlockDate.isBefore(LocalDateTime.now());
+    }
+
+    //FIXME => 정확한 시간 반환이 가능하도록 (초 단위에서 올림)
+    public String getModifyUnlockDateRemainStrHuman() {
+        return "2시간 16분";
+    }
+
 }
