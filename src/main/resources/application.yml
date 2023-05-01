@@ -61,4 +61,4 @@ logging:
 custom:
   likeablePerson:
     from:
-      max: 10
+      max: 10 # 호감 10명 제한
