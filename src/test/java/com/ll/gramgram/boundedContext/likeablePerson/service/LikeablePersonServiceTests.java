@@ -1,6 +1,7 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
@@ -106,6 +107,16 @@ public class LikeablePersonServiceTests {
             System.out.println("V4 : 중복으로 호감을 표시할 수 없습니다.");
             System.out.printf("V4 : 기존 호감사유 : %s%n", oldLikeablePerson.getAttractiveTypeDisplayName());
         }
+    }
+
+    @Test
+    @DisplayName("yml 파일에서 호감 표시에 대한 수정 쿨타임 가져오기")
+    void t006() throws Exception {
+
+        System.out.println("likeablePersonModifyCoolDown : " + AppConfig.getLikeablePersonModifyCoolDown());
+
+        assertThat(AppConfig.getLikeablePersonModifyCoolDown()).isGreaterThan(0);
+
     }
 
 

@@ -11,10 +11,17 @@ public class AppConfig {
     @Getter
     private static long likeablePersonFromMax;
 
+    @Getter
+    private static long likeablePersonModifyCoolDown;
 
     @Value("${custom.likeablePerson.from.max}")
     public void setLikeablePersonFromMax(long likeablePersonFromMax) {
         AppConfig.likeablePersonFromMax = likeablePersonFromMax;
+    }
+
+    @Value("${custom.likeablePerson.modifyCoolTime}")
+    public void setLikeablePersonModifyCoolDown(long likeablePersonModifyCoolDown) {
+        AppConfig.likeablePersonModifyCoolDown = likeablePersonModifyCoolDown;
     }
 
 }
