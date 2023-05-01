@@ -67,8 +67,7 @@ public class LikeablePersonService {
         //누가, 누구를, 좋아한다는 내용으로(Like or ModifyAttractiveType),
         //성별 바뀌지 않았음(null), 호감사유 변경이 아님(0), 새로운 성별 O ("M"), 새로운 호감 타입코드(TypeCode)
         // + 베이스 엔티티 (id, createDate, modifyDate)
-        notificationService.createNotification(fromInstaMember, toInstaMember, "Like",
-                null, 0, "M", attractiveTypeCode);
+        notificationService.createNotification(likeablePerson);
 
         //정상처리
         return canILikeRsData;
