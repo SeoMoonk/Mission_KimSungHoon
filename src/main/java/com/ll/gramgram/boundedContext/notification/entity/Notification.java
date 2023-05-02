@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -45,5 +46,19 @@ public class Notification extends BaseEntity {
             default -> "능력";
         };
     }
+
+    public String getCreateDateForDisplay() {
+
+        LocalDateTime createDate = this.getCreateDate();
+
+        long month = createDate.getMonthValue();
+        long day = createDate.getDayOfMonth();
+        long hours = createDate.getHour();
+        long minutes = createDate.getMinute();
+
+        return "%02d월 %02d일 %02d시 %02d분".formatted(month, day, hours, minutes);
+    }
+
+
 
 }
