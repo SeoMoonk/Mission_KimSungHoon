@@ -32,12 +32,13 @@ public class NotificationController {
         //서비스에서 현재 접속한 유저의 인스타 계정을 통해 알릴만한 내용이 있는지 찾아서 model 로 넘겨줌.
         List<Notification> notifications = notificationService.findByToInstaMember(rq.getMember().getInstaMember());
 
+        //매핑된 list URL 이 호출 되었을 때, 알림 목록을 가져오고, 호출 되었을 때 읽은 시각을 처리할 수 있도록.
+        notificationService.updateReadDate();
+
         //최신 알림이 상단에 오도록 역순으로 전송
         Collections.reverse(notifications);
 
         model.addAttribute("notifications", notifications);
-
-        //매핑된 list url이 호출 되었을 때, 알림 목록을 가져오고, 호출 되었을 때 읽은 시각을 처리할 수 있도록.
 
         return "usr/notification/list";
     }

@@ -47,18 +47,18 @@ public class Notification extends BaseEntity {
         };
     }
 
-    public String getCreateDateForDisplay() {
+    public String getDateForDisplay(LocalDateTime dateForDisplay) {
 
-        LocalDateTime createDate = this.getCreateDate();
-
-        long month = createDate.getMonthValue();
-        long day = createDate.getDayOfMonth();
-        long hours = createDate.getHour();
-        long minutes = createDate.getMinute();
+        long month = dateForDisplay.getMonthValue();
+        long day = dateForDisplay.getDayOfMonth();
+        long hours = dateForDisplay.getHour();
+        long minutes = dateForDisplay.getMinute();
 
         return "%02d월 %02d일 %02d시 %02d분".formatted(month, day, hours, minutes);
     }
 
-
+    public void updateReadDate() {
+        this.readDate = LocalDateTime.now();
+    }
 
 }
