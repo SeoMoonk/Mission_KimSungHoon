@@ -10,6 +10,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findByToInstaMember(InstaMember toInstaMember);
 
-    List<Notification> findByReadDateIsNull();
+    List<Notification> findByToInstaMemberAndReadDateIsNull(InstaMember toInstaMember);
 
 }

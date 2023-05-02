@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.notification.service;
 
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
+import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.notification.entity.Notification;
 import com.ll.gramgram.boundedContext.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class NotificationService {
                 .oldAttractiveTypeCode(0)                                     //이전엔 나를 뭐때문에 좋아했는데?
                 .newGender(null)                                              //FIXME 성별 수정인 경우, 바뀐 성별
                 .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())//이전과 다르게 나를 뭐로 좋아하게 됐는데?
-                .readDate(null)                                               //FIXME 생성시에 null 이고, 읽었을 때 now
+                .readDate(null)                                               //읽은 시각 (초기 데이터 null)
                 .build();
 
         notificationRepository.save(createNotification);
@@ -55,24 +56,26 @@ public class NotificationService {
                 .oldAttractiveTypeCode(oldAttractiveTypeCode)                 //이전엔 나를 뭐때문에 좋아했는데?
                 .newGender(null)                                              //FIXME 성별 수정인 경우, 바뀐 성별
                 .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())//이전과 다르게 나를 뭐로 좋아하게 됐는데?
-                .readDate(null)                                //FIXME 생성시에 null 이고, 읽었을 때 now
+                .readDate(null)                                               //읽은 시각 (초기 데이터 null)
                 .build();
+
+        modifyNotification.getToInstaMember().getUsername();
 
         //호감사유는 변경된 것 이라도, 기존 알림의 변경이 아닌 새로운 알림의 시작이기 떄문에 새로 생성해 주는 것이 맞다고 생각함.
         notificationRepository.save(modifyNotification);
     }
 
     @Transactional
-    public void updateReadDate()
+    public void updateReadDate(Member member)
     {
-        //readDate 가 null 인 것만 가져와서, 현재 시각으로 바꿔줌
-        List<Notification> byReadDateIsNull = notificationRepository.findByReadDateIsNull();
+        //나에 대한 알림이면서, readDate 가 null 인 항목들
+        List<Notification> findList = notificationRepository.findByToInstaMemberAndReadDateIsNull(member.getInstaMember());
 
-        if(!byReadDateIsNull.isEmpty())
+        if(!findList.isEmpty())
         {
-            for(int i=0; i<byReadDateIsNull.size(); i++)
+            for(int i=0; i<findList.size(); i++)
             {
-                Notification notificationForUpdate = byReadDateIsNull.get(i);
+                Notification notificationForUpdate = findList.get(i);
                 notificationForUpdate.updateReadDate();
             }
         }
