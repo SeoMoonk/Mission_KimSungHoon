@@ -10,7 +10,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findByToInstaMember(InstaMember toInstaMember);
 
-    //가장 큰 id 값을 반환
-    Long findFirstByOrderByIdDesc();
-
 }

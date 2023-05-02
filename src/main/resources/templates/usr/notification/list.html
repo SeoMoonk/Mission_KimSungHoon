@@ -43,16 +43,15 @@
                     <span class="badge badge-primary"
                           th:text="${news.fromInstaMember.username}"></span>가 당신을
                                         <span class="badge badge-primary"
-                                              th:text="${news.newAttractiveTypeCode}"></span> 때문에 좋아합니다.
+                                              th:text="${news.getAttractiveTypeDisplayName(news.newAttractiveTypeCode)}"></span> 때문에 좋아합니다.
                                     </div>
-
                                     <div th:if="${#strings.equals(news.typeCode, 'ModifyAttractiveType')}">
                     <span class="badge badge-primary"
                           th:text="${news.fromInstaMember.username}"></span> 가 당신의 호감 사유를
                                         <span class="badge badge-primary"
-                                              th:text="${news.oldAttractiveTypeCode}"></span> 에서
+                                              th:text="${news.getAttractiveTypeDisplayName(news.oldAttractiveTypeCode)}"></span> 에서
                                         <span class="badge badge-primary"
-                                              th:text="${news.newAttractiveTypeCode}"></span> 으로 변경하였습니다.
+                                              th:text="${news.getAttractiveTypeDisplayName(news.newAttractiveTypeCode)}"></span> 으로 변경하였습니다.
                                     </div>
                                 </div>
                             </div>

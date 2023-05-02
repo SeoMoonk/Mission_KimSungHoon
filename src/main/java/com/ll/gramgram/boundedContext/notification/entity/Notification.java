@@ -38,4 +38,12 @@ public class Notification extends BaseEntity {
 
     private int newAttractiveTypeCode; // 해당사항 없으면 0
 
+    public String getAttractiveTypeDisplayName(int AttractiveTypeCode) {
+        return switch (AttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
 }
