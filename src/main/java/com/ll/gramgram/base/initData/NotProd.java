@@ -7,6 +7,7 @@ import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import com.ll.gramgram.standard.util.Ut;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,19 @@ import java.time.LocalDateTime;
 @Configuration
 @Profile({"dev", "test"})
 public class NotProd {
+
+    @Value("${custom.security.oauth2.client.registration.kakao.devUserOauthId}")
+    private String kakaoDevUserOAuthId;
+
+    @Value("${custom.security.oauth2.client.registration.naver.devUserOauthId}")
+    private String naverDevUserOAuthId;
+
+    @Value("${custom.security.oauth2.client.registration.google.devUserOauthId}")
+    private String googleDevUserOAuthId;
+
+    @Value("${custom.security.oauth2.client.registration.facebook.devUserOauthId}")
+    private String facebookDevUserOAuthId;
+
     @Bean
     CommandLineRunner initData(
             MemberService memberService,
@@ -34,9 +48,10 @@ public class NotProd {
                 Member memberUser4 = memberService.join("user4", "1234").getData();
                 Member memberUser5 = memberService.join("user5", "1234").getData();
 
-                Member memberUser6ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2733173737").getData();
-                Member memberUser7ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__118207555631025983352").getData();
-                Member memberUser7ByNaver = memberService.whenSocialLogin("NAVER", "NAVER__gYM_D2wbKuRyBt1JaiZopj7iz1iOb-gLW1WuuD4zzNU").getData();
+                Member memberUser6ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__%s".formatted(kakaoDevUserOAuthId)).getData();
+                Member memberUser7ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__%s".formatted(googleDevUserOAuthId)).getData();
+                Member memberUser8ByNaver = memberService.whenSocialLogin("NAVER", "NAVER__%s".formatted(naverDevUserOAuthId)).getData();
+                Member memberUser9ByFacebook = memberService.whenSocialLogin("FACEBOOK", "FACEBOOK__%s".formatted(facebookDevUserOAuthId)).getData();
 
                 instaMemberService.connect(memberUser2, "insta_user2", "M");
                 instaMemberService.connect(memberUser3, "insta_user3", "W");
