@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -30,6 +31,9 @@ public class NotificationController {
 
         //서비스에서 현재 접속한 유저의 인스타 계정을 통해 알릴만한 내용이 있는지 찾아서 model 로 넘겨줌.
         List<Notification> notifications = notificationService.findByToInstaMember(rq.getMember().getInstaMember());
+
+        //최신 알림이 상단에 오도록 역순으로 전송
+        Collections.reverse(notifications);
 
         model.addAttribute("notifications", notifications);
 
