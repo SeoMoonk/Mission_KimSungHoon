@@ -20,7 +20,6 @@ public class NotificationService {
         return notificationRepository.findByToInstaMember(toInstaMember);
     }
 
-
     //내가 호감표시를 받았거나, 나에 대한 호감사유가 변경된 경우, 알림페이지에서 확인이 가능하도록.
     // => 나에 대한 호감 표시가 생성거나 변경되면(like, modify), ** 호감표시를 받은 사람의 입장에서 ** 알림이 생성된다.
 

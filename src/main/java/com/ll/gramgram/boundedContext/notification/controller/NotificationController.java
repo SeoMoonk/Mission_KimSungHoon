@@ -33,6 +33,8 @@ public class NotificationController {
 
         model.addAttribute("notifications", notifications);
 
+        //매핑된 list url이 호출 되었을 때, 알림 목록을 가져오고, 호출 되었을 때 읽은 시각을 처리할 수 있도록.
+
         return "usr/notification/list";
     }
 }
