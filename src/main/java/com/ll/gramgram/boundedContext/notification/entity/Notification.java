@@ -57,6 +57,42 @@ public class Notification extends BaseEntity {
         return "%02d월 %02d일 %02d시 %02d분".formatted(month, day, hours, minutes);
     }
 
+    public String timePassed() {
+
+        //등록 시간과 현재 시간이 얼마나 차이나는지  => 1분 미만일 경우 약 1분 전
+        LocalDateTime nowDate = LocalDateTime.now();
+        LocalDateTime notifCreateDate = this.getCreateDate();
+
+        Duration duration = Duration.between(notifCreateDate, nowDate);
+
+        long day = duration.toDays();
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes();
+
+        if(minutes < 1)
+        {
+            return "약 1분 전";
+        }
+        else if(minutes <= 59)
+        {
+            return "%02d 분 전".formatted(minutes);
+        }
+        else if(hours >= 1 && hours < 24)
+        {
+            return "%02d 시간 전".formatted(hours);
+        }
+        else if(day >= 1 && day <= 29)
+        {
+            return "%d 일 전".formatted(day);
+        }
+        else if(day > 30)
+        {
+            return "약 %02d 달 전".formatted(day/30);
+        }
+
+        return "%02d일 %02d시간 %02d 분 전".formatted(day, hours, minutes);
+    }
+
     public void updateReadDate() {
         this.readDate = LocalDateTime.now();
     }
