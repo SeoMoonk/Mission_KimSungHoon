@@ -71,11 +71,11 @@ public class Notification extends BaseEntity {
 
         if(minutes < 1)
         {
-            return "약 1분 전";
+            return "<i class=\"fa-solid fa-fire text-red-500\"></i>" + "&nbsp;" + "약 1분 전";
         }
         else if(minutes <= 59)
         {
-            return "%02d 분 전".formatted(minutes);
+            return "<i class=\"fa-solid fa-fire text-red-500\"></i>" + "&nbsp;" +"%02d 분 전".formatted(minutes);
         }
         else if(hours >= 1 && hours < 24)
         {
