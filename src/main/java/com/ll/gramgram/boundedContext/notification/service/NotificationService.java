@@ -59,8 +59,6 @@ public class NotificationService {
                 .readDate(null)                                               //읽은 시각 (초기 데이터 null)
                 .build();
 
-        modifyNotification.getToInstaMember().getUsername();
-
         //호감사유는 변경된 것 이라도, 기존 알림의 변경이 아닌 새로운 알림의 시작이기 떄문에 새로 생성해 주는 것이 맞다고 생각함.
         notificationRepository.save(modifyNotification);
     }

@@ -180,9 +180,9 @@ public class LikeablePersonService {
         //현재 시간이 modifyUnlockDate(쿨타임 제한시간) 이 지나지 않은 시각이라면?
         if(LocalDateTime.now().isBefore(modifyUnlockDate))
         {
-            return RsData.of("F-3", "쿨타임 해제 시각 : (%s) 으로, 아직 (%s) 만큼 더 기다려야 합니다."
+            return RsData.of("F-3", "쿨타임 해제 시각은 (%s) 으로, (%s) 부터 가능합니다."
                     .formatted(
-                            modifyUnlockDate.toString(),
+                            likeablePerson.getModifyUnlockDateToFormattedStr(),
                             likeablePerson.getModifyUnlockDateRemainStrHuman()
                     ));
         }
@@ -294,9 +294,6 @@ public class LikeablePersonService {
         }
 
         LocalDateTime modifyUnlockDate = likeablePerson.getModifyUnlockDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시 mm분");
-        String formattedDateTime = modifyUnlockDate.format(formatter);
-
 
         //현재 시간이 modifyUnlockDate(쿨타임 제한시간) 이 지나지 않은 시각이라면?
         //수정, 삭제 버튼이 disabled 인 상태에서 확인하는 법 ->
@@ -305,7 +302,7 @@ public class LikeablePersonService {
         {
             return RsData.of("F-3", "쿨타임 해제 시각은 (%s) 으로, (%s) 부터 가능합니다."
                     .formatted(
-                            formattedDateTime,
+                            likeablePerson.getModifyUnlockDateToFormattedStr(),
                             likeablePerson.getModifyUnlockDateRemainStrHuman()
                     ));
         }
