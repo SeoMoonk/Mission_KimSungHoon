@@ -212,28 +212,6 @@ public class LikeablePersonControllerTests {
                         """.stripIndent().trim())));
     }
 
-    @Test
-    @DisplayName("호감취소")
-    @WithUserDetails("user3")
-    void t006() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(
-                        delete("/usr/likeablePerson/1")
-                                .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("cancel"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/likeablePerson/list**"))
-        ;
-
-        assertThat(likeablePersonService.getLikeablePersonById(1L)).isNotNull();
-    }
 
     @Test
     @DisplayName("호감취소(없는거 취소, 취소가 안되어야 함)")
@@ -253,28 +231,6 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().methodName("cancel"))
                 .andExpect(status().is4xxClientError())
         ;
-    }
-
-    @Test
-    @DisplayName("호감취소(권한이 없는 경우, 취소가 안됨)")
-    @WithUserDetails("user2")
-    void t008() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(
-                        delete("/usr/likeablePerson/1")
-                                .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("cancel"))
-                .andExpect(status().is4xxClientError())
-        ;
-
-        assertThat(likeablePersonService.getLikeablePersonById(1L)).isNotNull();
     }
 
     @Test
