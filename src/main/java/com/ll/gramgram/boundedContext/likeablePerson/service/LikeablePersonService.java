@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -220,7 +221,20 @@ public class LikeablePersonService {
         return RsData.of("S-1", "호감사유변경이 가능합니다.");
     }
 
-    public List<LikeablePerson> filteringByGender(String gender) {
-        return likeablePersonRepository.findByFromInstaMemberGender(gender);
+    public List<LikeablePerson> filteringByGender(List<LikeablePerson> likeablePeople, String gender) {
+
+        //지금까지는 모든 호감목록에서 성별이 같은것을 모두 출력했다면,
+        //"나에 대한 리스트" 에서 성별이 같은것을 출력하도록 하는것이 필요함.
+        List<LikeablePerson> filteredListByGender = new ArrayList<>();
+
+        for (LikeablePerson likeablePerson : likeablePeople)
+        {
+            if (likeablePerson.getFromInstaMember().getGender().equals(gender))
+            {
+                filteredListByGender.add(likeablePerson);
+            }
+        }
+
+        return filteredListByGender;
     }
 }

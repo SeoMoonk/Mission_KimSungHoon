@@ -127,17 +127,18 @@ public class LikeablePersonController {
 
         InstaMember instaMember = rq.getMember().getInstaMember();
 
-        if(instaMember != null)
+        if(instaMember != null )
         {
-            if(gender != null)
+            List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+
+            if(gender == null || gender.equals(""))
             {
-                List<LikeablePerson> genderList = likeablePersonService.filteringByGender(gender);
-                model.addAttribute("likeablePeople", genderList);
-            }
-            else
-            {
-                List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
                 model.addAttribute("likeablePeople", likeablePeople);
+            }
+            else if(gender.equals("W") || gender.equals("M"))
+            {
+                List<LikeablePerson> filteredByGenderList = likeablePersonService.filteringByGender(likeablePeople, gender);
+                model.addAttribute("likeablePeople", filteredByGenderList);
             }
         }
 
