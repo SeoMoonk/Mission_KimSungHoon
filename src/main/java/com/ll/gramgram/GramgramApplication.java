@@ -2,11 +2,13 @@ package com.ll.gramgram;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
 @SpringBootApplication
 @EnableJpaAuditing // @EntityListeners(AuditingEntityListener.class) 가 작동하도록 허용
+@EnableCaching
 public class GramgramApplication {
 
     public static void main(String[] args) {

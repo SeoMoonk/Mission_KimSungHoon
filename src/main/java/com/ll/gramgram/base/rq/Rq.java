@@ -144,6 +144,16 @@ public class Rq {
         session.removeAttribute(name);
     }
 
+    public boolean hasUnreadNotifications() {
+        if (isLogout()) return false;
+
+        Member actor = getMember();
+
+        if (!actor.hasConnectedInstaMember()) return false;
+
+        return notificationService.countUnreadNotificationsByToInstaMember(getMember().getInstaMember());
+    }
+
     public String getCText(String code, String... args) {
         return messageSource.getMessage(code, args, getLocale());
     }
