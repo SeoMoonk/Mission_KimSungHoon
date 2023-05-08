@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -128,8 +129,27 @@ public class LikeablePersonController {
 
         System.out.println("gender = " + gender);
 
+        if(instaMember != null && gender != null)
+        {
+            //1. 내가 받은 호감 목록이 여기에 있는데
+            List<LikeablePerson> allList = instaMember.getToLikeablePeople();
+
+            //2. 이 목록 중에서 나한테 호감을 표시한 사람의 Gender 가 gender 와 일치하는 경우만 model 에 추가하고 싶어.
+            //(리스트를 넘겨줘야함)
+            List<LikeablePerson> genderList = new ArrayList<>();
+
+            for(int i=0; i< allList.size(); i++)
+            {
+                if(allList.get(i).getFromInstaMember().getGender().equals(gender))
+                {
+                    genderList.add(allList.get(i));
+                }
+            }
+
+            model.addAttribute("likeablePeople", genderList);
+        }
         // 인스타인증을 했는지 체크
-        if (instaMember != null) {
+        else if (instaMember != null) {
             // 해당 인스타회원이 좋아하는 사람들 목록
             List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
             model.addAttribute("likeablePeople", likeablePeople);
