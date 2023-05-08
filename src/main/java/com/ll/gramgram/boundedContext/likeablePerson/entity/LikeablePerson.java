@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.entity;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.standard.util.Ut;
@@ -9,7 +10,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -46,12 +49,16 @@ public class LikeablePerson {
 
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
 
+    private LocalDateTime modifyUnlockDate;   //제한 해제 시간
+
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {
         if (this.attractiveTypeCode == attractiveTypeCode) {
             return RsData.of("F-1", "이미 설정되었습니다.");
         }
 
         this.attractiveTypeCode = attractiveTypeCode;
+        this.modifyUnlockDate = AppConfig.genLikeablePersonModifyUnlockDate();
+
         return RsData.of("S-1", "성공");
     }
 
@@ -80,4 +87,32 @@ public class LikeablePerson {
             default -> "<i class=\"fa-solid fa-people-roof\"></i>";
         } + "&nbsp;" + getAttractiveTypeDisplayName();
     }
+
+    public boolean isModifyUnlocked() {
+        return modifyUnlockDate.isBefore(LocalDateTime.now());
+    }
+
+    //쿨타임 해제 시간
+    public String getModifyUnlockDateToFormattedStr() {
+
+        LocalDateTime modifyUnlockDate = this.modifyUnlockDate;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시 mm분");
+        String formattedDateTime = modifyUnlockDate.format(formatter);
+
+        return formattedDateTime;
+    }
+
+    //쿨타임 해제까지 남은 시간
+    public String getModifyUnlockDateRemainStrHuman() {
+
+        LocalDateTime nowDate = LocalDateTime.now();
+        LocalDateTime modifyUnlockDate = this.getModifyUnlockDate();
+
+        Duration duration = Duration.between(nowDate, modifyUnlockDate);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+
+        return "%02d 시간 %02d 분 후".formatted(hours, minutes);
+    }
+
 }

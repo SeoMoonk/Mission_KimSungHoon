@@ -33,9 +33,9 @@
                         호감목록</a>
                     </li>
                     <li th:if="${@rq.login}" th:unless="${@rq.member.hasConnectedInstaMember}">
-                        <a href="/usr/instaMember/connect">
+                        <a href="/usr/instaMember/connectByApi">
                             <i class="fa-brands fa-instagram"></i>
-                            인스타 아이디 입력
+                            인스타 아이디 연결
                         </a>
                     </li>
                     <li><a href="/usr/home/about"><i class="fa-solid fa-heart"></i> 그램그램이란?</a>
@@ -53,7 +53,7 @@
             <a href="/usr/member/me" class="btn btn-ghost gap-1" th:if="${@rq.login}">
                 <i class="fa-solid fa-user"></i>
             </a>
-            <a href="/usr/noti/list" class="btn btn-ghost btn-circle">
+            <a href="/usr/notification/list" class="btn btn-ghost btn-circle">
                 <div class="indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                          stroke="currentColor">

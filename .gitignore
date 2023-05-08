@@ -40,3 +40,5 @@ out/
 src/main/resources/application-oauth.yml
 
 src/main/generated
+
+src/main/resources/application-prod.yml
