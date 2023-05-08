@@ -23,9 +23,10 @@
     <link rel="stylesheet" href="/resource/common/common.css">
 
     <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE" th:utext="#{c.logoTextWithEmojiEn}"></title>
-    <script th:inline="javascript">
+
+    <script>
         // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-        const params = /*[[ ${param} ]]*/ null;
+        const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
     </script>
 </head>
 
@@ -43,7 +44,6 @@
 </div>
 
 <script th:inline="javascript">
-
     if (params.msg) {
         toastNotice(params.msg[0]);
     }
@@ -69,6 +69,11 @@
             }
         }
     });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jdenticon@3.2.0/dist/jdenticon.min.js" async
+        integrity="sha384-yBhgDqxM50qJV5JPdayci8wCfooqvhFYbIKhv0hTtLvfeeyJMJCscRfFNKIxt43M"
+        crossorigin="anonymous">
 </script>
 
 </body>
