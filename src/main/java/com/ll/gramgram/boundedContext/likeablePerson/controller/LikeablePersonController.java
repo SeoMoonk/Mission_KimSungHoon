@@ -152,7 +152,7 @@ public class LikeablePersonController {
 
             if(!hasGenderFilter && !hasTypeCodeFilter)
             {
-                //추가 작업이 필요 없음.
+                //추가 작업이 필요 없음. => 걸러내기 위해 제일 상단 배치.
             }
             else if(hasGenderFilter && hasTypeCodeFilter)
             {
@@ -208,7 +208,9 @@ public class LikeablePersonController {
                     break;
                 case 5: //성별순(여성먼저 표시 후 남성 표시, 2순위 조건은 최신순)
                     break;
-                case 6: //호감사유순(외모부터 -> 성격 -> 능력순서로, 2순위 조건은 최신순)
+                case 6: //호감사유순(1.외모부터 -> 2.성격 -> 3.능력순서로, 2순위 조건은 최신순)
+                    comparator = Comparator.comparing(LikeablePerson::getAttractiveTypeCode).reversed()
+                            .thenComparing(LikeablePerson::getCreateDate).reversed();
                     break;
             }
 
