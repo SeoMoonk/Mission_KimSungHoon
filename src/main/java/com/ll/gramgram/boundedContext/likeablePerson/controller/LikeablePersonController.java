@@ -15,7 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/usr/likeablePerson")
@@ -124,6 +128,7 @@ public class LikeablePersonController {
     @GetMapping("/toList")
     public String showToList(@RequestParam(name = "gender", required = false) String gender,
                              @RequestParam(name = "attractiveTypeCode", required = false) String attractiveTypeCode,
+                             @RequestParam(name = "sortCode", required = true, defaultValue = "1") String sortCode,
                              Model model) {
 
         InstaMember instaMember = rq.getMember().getInstaMember();
@@ -131,39 +136,73 @@ public class LikeablePersonController {
         if(instaMember != null )
         {
             List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+            List<LikeablePerson> filteredResultList = new ArrayList<>();
             boolean hasGenderFilter = likeablePersonService.hasGenderFilter(gender);
             boolean hasTypeCodeFilter = likeablePersonService.hasTypeCodeFilter(attractiveTypeCode);
 
             if(!hasGenderFilter && !hasTypeCodeFilter)
             {
-                model.addAttribute("likeablePeople", likeablePeople);
+                filteredResultList = likeablePeople;
+//                model.addAttribute("likeablePeople", likeablePeople);
             }
             else if(hasGenderFilter && hasTypeCodeFilter)
             {
-//                List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
-//                List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
-//
-//                List<LikeablePerson> filteredListByGenderAndTypeCode2 =
-//                        likeablePersonService.filteringByGenderAndTypeCode(filteredListByGender, filteredListByTypeCode);
 
                 List<LikeablePerson> filteredListByGenderAndTypeCode = likeablePersonService
                         .filteringByGenderAndTypeCode(likeablePeople, gender, attractiveTypeCode);
 
-                model.addAttribute("likeablePeople", filteredListByGenderAndTypeCode);
+                filteredResultList = filteredListByGenderAndTypeCode;
+
+//                model.addAttribute("likeablePeople", filteredListByGenderAndTypeCode);
             }
             else if(hasGenderFilter)
             {
+                //V1 (단순 조회)
                 //List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
 
+                //V2 (쿼리 사용)
                 List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
-                model.addAttribute("likeablePeople", filteredListByGenderQsl);
+
+                //V3 (Stream 의 filter 메서드)
+
+                filteredResultList = filteredListByGenderQsl;
+
+//                model.addAttribute("likeablePeople", filteredListByGenderQsl);
             }
             else if(hasTypeCodeFilter)
             {
-                //List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
                 List<LikeablePerson> filteredListByTypeCodeQsl = likeablePersonService.filteringByTypeCodeQuery(instaMember.getId(), attractiveTypeCode);
-                model.addAttribute("likeablePeople", filteredListByTypeCodeQsl);
+
+                filteredResultList = filteredListByTypeCodeQsl;
+
+//                model.addAttribute("likeablePeople", filteredListByTypeCodeQsl);
             }
+
+            Stream<LikeablePerson> likeablePeopleStream = filteredResultList.stream();
+            Stream<LikeablePerson> sortedStream;
+            Comparator<LikeablePerson> comparator = null;
+            int integerSortCode = Integer.parseInt(sortCode);
+
+            switch(integerSortCode) {
+                case 1: //최신순
+                    comparator = Comparator.comparing(LikeablePerson::getCreateDate).reversed();
+                    break;
+                case 2: //오래된순
+                    comparator = Comparator.comparing(LikeablePerson::getCreateDate);
+                    break;
+                case 3: //가장 인기가 많은 사람들의 호감표시를 우선적으로 표시
+                    break;
+                case 4: //가장 인기가 적은 사람들의 호감표시를 우선적으로 표시
+                    break;
+                case 5: //성별순(여성먼저 표시 후 남성 표시, 2순위 조건은 최신순)
+                    break;
+                case 6: //호감사유순(외모부터 -> 성격 -> 능력순서로, 2순위 조건은 최신순)
+                    break;
+            }
+
+            sortedStream = likeablePeopleStream.sorted(comparator);
+
+            model.addAttribute("likeablePeople", sortedStream.toList());
         }
 
         return "usr/likeablePerson/toList";
