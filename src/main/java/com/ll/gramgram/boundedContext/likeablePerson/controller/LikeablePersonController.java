@@ -199,8 +199,12 @@ public class LikeablePersonController {
                     comparator = Comparator.comparing(LikeablePerson::getCreateDate);
                     break;
                 case 3: //가장 인기가 많은 사람들의 호감표시를 우선적으로 표시 (instaMember.getLikes( );)
+                    comparator = Comparator.comparing(likeablePerson ->
+                            likeablePerson.getFromInstaMember().getLikes(), Comparator.reverseOrder());
                     break;
                 case 4: //가장 인기가 적은 사람들의 호감표시를 우선적으로 표시
+                    comparator = Comparator.comparing(likeablePerson ->
+                            likeablePerson.getFromInstaMember().getLikes());
                     break;
                 case 5: //성별순(여성먼저 표시 후 남성 표시, 2순위 조건은 최신순)
                     break;
