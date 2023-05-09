@@ -254,6 +254,26 @@ public class LikeablePersonService {
         return filteredListByTypeCode;
     }
 
+    public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> filteredListByGender,
+                                                             List<LikeablePerson> filteredListByTypeCode)
+    {
+        List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
+
+        for(LikeablePerson likeablePerson1 : filteredListByGender)
+        {
+            for(LikeablePerson likeablePerson2 : filteredListByTypeCode)
+            {
+                if(likeablePerson1.getId() == likeablePerson2.getId())
+                {
+                    filteredListByGenderAndTypeCode.add(likeablePerson1);
+                    break;
+                }
+            }
+        }
+
+        return filteredListByGenderAndTypeCode;
+    }
+
     public boolean hasGenderFilter(String gender){
 
         if(gender == null || gender.equals("")) {

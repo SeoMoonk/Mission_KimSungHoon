@@ -140,17 +140,23 @@ public class LikeablePersonController {
             }
             else if(hasGenderFilter && hasTypeCodeFilter)
             {
+                List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
+                List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
 
+                List<LikeablePerson> filteredByGenderAndTypeCodeList =
+                        likeablePersonService.filteringByGenderAndTypeCode(filteredListByGender, filteredListByTypeCode);
+
+                model.addAttribute("likeablePeople", filteredByGenderAndTypeCodeList);
             }
             else if(hasGenderFilter)
             {
-                List<LikeablePerson> filteredByGenderList = likeablePersonService.filteringByGender(likeablePeople, gender);
-                model.addAttribute("likeablePeople", filteredByGenderList);
+                List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
+                model.addAttribute("likeablePeople", filteredListByGender);
             }
             else if(hasTypeCodeFilter)
             {
-                List<LikeablePerson> filteredByTypeCodeList = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
-                model.addAttribute("likeablePeople", filteredByTypeCodeList);
+                List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
+                model.addAttribute("likeablePeople", filteredListByTypeCode);
             }
         }
 
