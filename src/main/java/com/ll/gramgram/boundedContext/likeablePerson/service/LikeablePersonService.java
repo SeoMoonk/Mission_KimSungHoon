@@ -15,10 +15,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -333,4 +331,102 @@ public class LikeablePersonService {
 
         return false;
     }
+
+    public Stream<LikeablePerson> getStreamByFiltering(InstaMember instaMember, String gender, String attractiveTypeCode) {
+
+        List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+        Stream<LikeablePerson> likeablePeopleStream = likeablePeople.stream();
+
+        boolean hasGenderFilter = hasGenderFilter(gender);
+        boolean hasTypeCodeFilter = hasTypeCodeFilter(attractiveTypeCode);
+
+        int integerAttractiveTypeCode;
+
+        if(hasTypeCodeFilter) {
+            integerAttractiveTypeCode = Integer.parseInt(attractiveTypeCode);
+        } else {
+            integerAttractiveTypeCode = -1;
+        }
+
+        if(!hasGenderFilter && !hasTypeCodeFilter)
+        {
+            //추가 작업이 필요 없음. => 걸러내기 위해 제일 상단 배치.
+        }
+        else if(hasGenderFilter && hasTypeCodeFilter)
+        {
+            Stream<LikeablePerson> genderAndtypeCodeStream = likeablePeopleStream
+                    .filter(likeablePerson ->
+                            likeablePerson.getFromInstaMember().getGender().equals(gender)
+                                    && likeablePerson.getAttractiveTypeCode() == integerAttractiveTypeCode);
+
+            likeablePeopleStream = genderAndtypeCodeStream;
+        }
+        else if(hasGenderFilter)
+        {
+            //V1 (단순 조회)
+            //List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
+
+            //V2 (쿼리 사용)
+            //List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
+
+            //V3 (Stream 의 filter 메서드)
+            Stream<LikeablePerson> genderStream = likeablePeopleStream
+                    .filter(likeablePerson ->
+                            likeablePerson.getFromInstaMember().getGender().equals(gender));
+
+            likeablePeopleStream = genderStream;
+
+        }
+        else if(hasTypeCodeFilter)
+        {
+            Stream<LikeablePerson> typeCodeStream = likeablePeopleStream
+                    .filter(likeablePerson ->
+                            likeablePerson.getAttractiveTypeCode() == integerAttractiveTypeCode);
+
+            likeablePeopleStream = typeCodeStream;
+        }
+
+        return likeablePeopleStream;
+    }
+
+    public Comparator<LikeablePerson> getComparator(String sortCode){
+
+        int integerSortCode = Integer.parseInt(sortCode);
+
+        Comparator<LikeablePerson> comparator = null;
+
+        switch(integerSortCode) {
+            case 1: //최신순
+                comparator = Comparator.comparing(LikeablePerson::getCreateDate).reversed();
+                break;
+            case 2: //오래된순
+                comparator = Comparator.comparing(LikeablePerson::getCreateDate);
+                break;
+            case 3: //가장 인기가 많은 사람들의 호감표시를 우선적으로 표시
+                comparator = Comparator.comparing(likeablePerson ->
+                        likeablePerson.getFromInstaMember().getLikes(), Comparator.reverseOrder());
+                break;
+            case 4: //가장 인기가 적은 사람들의 호감표시를 우선적으로 표시
+                comparator = Comparator.comparing(likeablePerson ->
+                        likeablePerson.getFromInstaMember().getLikes());
+                break;
+            case 5: //성별순(여성먼저 표시 후 남성 표시, 2순위 조건은 최신순)
+                comparator = Comparator
+                        .<LikeablePerson, String> comparing(likeablePerson ->
+                                likeablePerson.getFromInstaMember().getGender().equals("W") ? "0" : "1")
+                        .thenComparing(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("M") ? "0" : "1")
+                        .thenComparing(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
+                break;
+            case 6: //호감사유순(1.외모부터 -> 2.성격 -> 3.능력순서로, 2순위 조건은 최신순)
+                comparator = Comparator.comparing(LikeablePerson::getAttractiveTypeCode).reversed()
+                        .thenComparing(LikeablePerson::getCreateDate).reversed();
+                break;
+        }
+
+        return comparator;
+    }
+
+
+
+
 }
