@@ -238,6 +238,13 @@ public class LikeablePersonService {
         return filteredListByGender;
     }
 
+    public List<LikeablePerson> filteringByGenderQuery(long toInstaMemberId, String gender) {
+
+        List<LikeablePerson> filteredListByGender = likeablePersonRepository.findQslByToInstaMemberIdAndFromInstaMember_gender(toInstaMemberId,gender);
+
+        return filteredListByGender;
+    }
+
     public List<LikeablePerson> filteringByTypeCode(List<LikeablePerson> likeablePeople, String typeCode) {
 
         List<LikeablePerson> filteredListByTypeCode = new ArrayList<>();
@@ -255,8 +262,7 @@ public class LikeablePersonService {
     }
 
     public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> filteredListByGender,
-                                                             List<LikeablePerson> filteredListByTypeCode)
-    {
+                                                             List<LikeablePerson> filteredListByTypeCode) {
         List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
 
         for(LikeablePerson likeablePerson1 : filteredListByGender)
@@ -268,6 +274,29 @@ public class LikeablePersonService {
                     filteredListByGenderAndTypeCode.add(likeablePerson1);
                     break;
                 }
+            }
+        }
+
+        return filteredListByGenderAndTypeCode;
+    }
+
+    public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> likeablePeople, String gender, String typeCode){
+
+        List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
+
+        //호감목록에서, 내거면서, 타입코드가 00인것들
+        //호감목록에서, 내거면서, 나를 좋아하는 사람의 gender 가 00인 것들
+        //호감목록에서, 내거면서, 나를 좋아하는 사람의 gender 가 00이고, 타입코드가 00인 것들
+
+        int attractiveTypeCode = Integer.parseInt(typeCode);
+
+        for(LikeablePerson likeablePerson : likeablePeople)
+        {
+            if(likeablePerson.getFromInstaMember().getGender().equals(gender) &&
+                    likeablePerson.getAttractiveTypeCode() == attractiveTypeCode) {
+
+                filteredListByGenderAndTypeCode.add(likeablePerson);
+
             }
         }
 

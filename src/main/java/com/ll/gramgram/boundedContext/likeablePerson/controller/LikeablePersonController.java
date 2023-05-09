@@ -140,18 +140,23 @@ public class LikeablePersonController {
             }
             else if(hasGenderFilter && hasTypeCodeFilter)
             {
-                List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
-                List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
+//                List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
+//                List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
+//
+//                List<LikeablePerson> filteredListByGenderAndTypeCode2 =
+//                        likeablePersonService.filteringByGenderAndTypeCode(filteredListByGender, filteredListByTypeCode);
 
-                List<LikeablePerson> filteredByGenderAndTypeCodeList =
-                        likeablePersonService.filteringByGenderAndTypeCode(filteredListByGender, filteredListByTypeCode);
+                List<LikeablePerson> filteredListByGenderAndTypeCode = likeablePersonService
+                        .filteringByGenderAndTypeCode(likeablePeople, gender, attractiveTypeCode);
 
-                model.addAttribute("likeablePeople", filteredByGenderAndTypeCodeList);
+                model.addAttribute("likeablePeople", filteredListByGenderAndTypeCode);
             }
             else if(hasGenderFilter)
             {
                 List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
-                model.addAttribute("likeablePeople", filteredListByGender);
+
+                List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
+                model.addAttribute("likeablePeople", filteredListByGenderQsl);
             }
             else if(hasTypeCodeFilter)
             {
