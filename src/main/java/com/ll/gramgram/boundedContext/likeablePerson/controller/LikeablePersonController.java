@@ -153,15 +153,16 @@ public class LikeablePersonController {
             }
             else if(hasGenderFilter)
             {
-                List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
+                //List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
 
                 List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
                 model.addAttribute("likeablePeople", filteredListByGenderQsl);
             }
             else if(hasTypeCodeFilter)
             {
-                List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
-                model.addAttribute("likeablePeople", filteredListByTypeCode);
+                //List<LikeablePerson> filteredListByTypeCode = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
+                List<LikeablePerson> filteredListByTypeCodeQsl = likeablePersonService.filteringByTypeCodeQuery(instaMember.getId(), attractiveTypeCode);
+                model.addAttribute("likeablePeople", filteredListByTypeCodeQsl);
             }
         }
 

@@ -261,6 +261,19 @@ public class LikeablePersonService {
         return filteredListByTypeCode;
     }
 
+    public List<LikeablePerson> filteringByTypeCodeQuery(long toInstaMemberId, String attractiveTypeCode){
+
+        int integerTypeCode = Integer.parseInt(attractiveTypeCode);
+
+        List<LikeablePerson> filteredListByTypeCode =
+                likeablePersonRepository.findQslByToInstaMemberIdAndAttractiveTypeCode(toInstaMemberId, integerTypeCode);
+
+        //이렇게 해도 됨.
+        //return likeablePersonRepository.findQslByToInstaMemberIdAndAttractiveTypeCode(toInstaMemberId, integerTypeCode);
+
+        return filteredListByTypeCode;
+    }
+
     public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> filteredListByGender,
                                                              List<LikeablePerson> filteredListByTypeCode) {
         List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
