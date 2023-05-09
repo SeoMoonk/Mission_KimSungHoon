@@ -207,6 +207,11 @@ public class LikeablePersonController {
                             likeablePerson.getFromInstaMember().getLikes());
                     break;
                 case 5: //성별순(여성먼저 표시 후 남성 표시, 2순위 조건은 최신순)
+                    comparator = Comparator
+                            .<LikeablePerson, String> comparing(likeablePerson ->
+                                    likeablePerson.getFromInstaMember().getGender().equals("W") ? "0" : "1")
+                            .thenComparing(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals("M") ? "0" : "1")
+                            .thenComparing(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
                     break;
                 case 6: //호감사유순(1.외모부터 -> 2.성격 -> 3.능력순서로, 2순위 조건은 최신순)
                     comparator = Comparator.comparing(LikeablePerson::getAttractiveTypeCode).reversed()
