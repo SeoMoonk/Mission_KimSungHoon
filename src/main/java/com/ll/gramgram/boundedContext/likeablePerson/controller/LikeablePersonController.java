@@ -149,7 +149,8 @@ public class LikeablePersonController {
             }
             else if(hasTypeCodeFilter)
             {
-
+                List<LikeablePerson> filteredByTypeCodeList = likeablePersonService.filteringByTypeCode(likeablePeople, attractiveTypeCode);
+                model.addAttribute("likeablePeople", filteredByTypeCodeList);
             }
         }
 

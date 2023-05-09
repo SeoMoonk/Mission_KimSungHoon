@@ -238,6 +238,22 @@ public class LikeablePersonService {
         return filteredListByGender;
     }
 
+    public List<LikeablePerson> filteringByTypeCode(List<LikeablePerson> likeablePeople, String typeCode) {
+
+        List<LikeablePerson> filteredListByTypeCode = new ArrayList<>();
+        int attractiveTypeCode = Integer.parseInt(typeCode);
+
+        for(LikeablePerson likeablePerson : likeablePeople)
+        {
+            if(attractiveTypeCode == likeablePerson.getAttractiveTypeCode())
+            {
+                filteredListByTypeCode.add(likeablePerson);
+            }
+        }
+
+        return filteredListByTypeCode;
+    }
+
     public boolean hasGenderFilter(String gender){
 
         if(gender == null || gender.equals("")) {
