@@ -198,7 +198,7 @@ public class LikeablePersonController {
                 case 2: //오래된순
                     comparator = Comparator.comparing(LikeablePerson::getCreateDate);
                     break;
-                case 3: //가장 인기가 많은 사람들의 호감표시를 우선적으로 표시
+                case 3: //가장 인기가 많은 사람들의 호감표시를 우선적으로 표시 (instaMember.getLikes( );)
                     break;
                 case 4: //가장 인기가 적은 사람들의 호감표시를 우선적으로 표시
                     break;

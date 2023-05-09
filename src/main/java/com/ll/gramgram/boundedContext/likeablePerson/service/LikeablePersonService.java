@@ -223,8 +223,6 @@ public class LikeablePersonService {
 
     public List<LikeablePerson> filteringByGender(List<LikeablePerson> likeablePeople, String gender) {
 
-        //지금까지는 모든 호감목록에서 성별이 같은것을 모두 출력했다면,
-        //"나에 대한 리스트" 에서 성별이 같은것을 출력하도록 하는것이 필요함.
         List<LikeablePerson> filteredListByGender = new ArrayList<>();
 
         for (LikeablePerson likeablePerson : likeablePeople)
@@ -296,10 +294,6 @@ public class LikeablePersonService {
     public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> likeablePeople, String gender, String typeCode){
 
         List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
-
-        //호감목록에서, 내거면서, 타입코드가 00인것들
-        //호감목록에서, 내거면서, 나를 좋아하는 사람의 gender 가 00인 것들
-        //호감목록에서, 내거면서, 나를 좋아하는 사람의 gender 가 00이고, 타입코드가 00인 것들
 
         int attractiveTypeCode = Integer.parseInt(typeCode);
 
