@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -123,49 +122,37 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(@RequestParam(name = "gender", required = false) String gender, Model model) {
+    public String showToList(@RequestParam(name = "gender", required = false) String gender,
+                             @RequestParam(name = "attractiveTypeCode", required = false) String attractiveTypeCode,
+                             Model model) {
 
         InstaMember instaMember = rq.getMember().getInstaMember();
 
         if(instaMember != null )
         {
             List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+            boolean hasGenderFilter = likeablePersonService.hasGenderFilter(gender);
+            boolean hasTypeCodeFilter = likeablePersonService.hasTypeCodeFilter(attractiveTypeCode);
 
-            if(gender == null || gender.equals(""))
+            if(!hasGenderFilter && !hasTypeCodeFilter)
             {
                 model.addAttribute("likeablePeople", likeablePeople);
             }
-            else if(gender.equals("W") || gender.equals("M"))
+            else if(hasGenderFilter && hasTypeCodeFilter)
+            {
+
+            }
+            else if(hasGenderFilter)
             {
                 List<LikeablePerson> filteredByGenderList = likeablePersonService.filteringByGender(likeablePeople, gender);
                 model.addAttribute("likeablePeople", filteredByGenderList);
             }
+            else if(hasTypeCodeFilter)
+            {
+
+            }
         }
 
         return "usr/likeablePerson/toList";
-    }
-
-    public boolean hasGenderFilter(String gender){
-
-        if(gender == null || gender.equals("")) {
-            return false;
-        }
-        else if(gender.equals("W") || gender.equals("M")){
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean hasTypeCodeFilter(String typeCode) {
-
-        if(typeCode == null || typeCode.equals("")){
-            return false;
-        }
-        else if(typeCode.equals("1") || typeCode.equals("2") || typeCode.equals("3")) {
-            return true;
-        }
-
-        return false;
     }
 }
