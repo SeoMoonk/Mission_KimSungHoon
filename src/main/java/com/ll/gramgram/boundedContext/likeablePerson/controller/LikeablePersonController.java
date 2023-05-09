@@ -136,24 +136,32 @@ public class LikeablePersonController {
         if(instaMember != null )
         {
             List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
-            List<LikeablePerson> filteredResultList = new ArrayList<>();
+            Stream<LikeablePerson> likeablePeopleStream = likeablePeople.stream();
+
             boolean hasGenderFilter = likeablePersonService.hasGenderFilter(gender);
             boolean hasTypeCodeFilter = likeablePersonService.hasTypeCodeFilter(attractiveTypeCode);
+            int integerAttractiveTypeCode;
+
+            int integerSortCode = Integer.parseInt(sortCode);
+
+            if(hasTypeCodeFilter) {
+                integerAttractiveTypeCode = Integer.parseInt(attractiveTypeCode);
+            } else {
+                integerAttractiveTypeCode = -1;
+            }
 
             if(!hasGenderFilter && !hasTypeCodeFilter)
             {
-                filteredResultList = likeablePeople;
-//                model.addAttribute("likeablePeople", likeablePeople);
+                //추가 작업이 필요 없음.
             }
             else if(hasGenderFilter && hasTypeCodeFilter)
             {
+                Stream<LikeablePerson> genderAndtypeCodeStream = likeablePeopleStream
+                        .filter(likeablePerson ->
+                                likeablePerson.getFromInstaMember().getGender().equals(gender)
+                                        && likeablePerson.getAttractiveTypeCode() == integerAttractiveTypeCode);
 
-                List<LikeablePerson> filteredListByGenderAndTypeCode = likeablePersonService
-                        .filteringByGenderAndTypeCode(likeablePeople, gender, attractiveTypeCode);
-
-                filteredResultList = filteredListByGenderAndTypeCode;
-
-//                model.addAttribute("likeablePeople", filteredListByGenderAndTypeCode);
+                likeablePeopleStream = genderAndtypeCodeStream;
             }
             else if(hasGenderFilter)
             {
@@ -161,27 +169,27 @@ public class LikeablePersonController {
                 //List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
 
                 //V2 (쿼리 사용)
-                List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
+                //List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
 
                 //V3 (Stream 의 filter 메서드)
+                Stream<LikeablePerson> genderStream = likeablePeopleStream
+                        .filter(likeablePerson ->
+                                likeablePerson.getFromInstaMember().getGender().equals(gender));
 
-                filteredResultList = filteredListByGenderQsl;
+                likeablePeopleStream = genderStream;
 
-//                model.addAttribute("likeablePeople", filteredListByGenderQsl);
             }
             else if(hasTypeCodeFilter)
             {
-                List<LikeablePerson> filteredListByTypeCodeQsl = likeablePersonService.filteringByTypeCodeQuery(instaMember.getId(), attractiveTypeCode);
+                Stream<LikeablePerson> typeCodeStream = likeablePeopleStream
+                        .filter(likeablePerson ->
+                                likeablePerson.getAttractiveTypeCode() == integerAttractiveTypeCode);
 
-                filteredResultList = filteredListByTypeCodeQsl;
-
-//                model.addAttribute("likeablePeople", filteredListByTypeCodeQsl);
+                likeablePeopleStream = typeCodeStream;
             }
 
-            Stream<LikeablePerson> likeablePeopleStream = filteredResultList.stream();
             Stream<LikeablePerson> sortedStream;
             Comparator<LikeablePerson> comparator = null;
-            int integerSortCode = Integer.parseInt(sortCode);
 
             switch(integerSortCode) {
                 case 1: //최신순
