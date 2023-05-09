@@ -144,4 +144,28 @@ public class LikeablePersonController {
 
         return "usr/likeablePerson/toList";
     }
+
+    public boolean hasGenderFilter(String gender){
+
+        if(gender == null || gender.equals("")) {
+            return false;
+        }
+        else if(gender.equals("W") || gender.equals("M")){
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean hasTypeCodeFilter(String typeCode) {
+
+        if(typeCode == null || typeCode.equals("")){
+            return false;
+        }
+        else if(typeCode.equals("1") || typeCode.equals("2") || typeCode.equals("3")) {
+            return true;
+        }
+
+        return false;
+    }
 }
