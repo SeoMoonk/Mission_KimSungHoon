@@ -9,3 +9,7 @@ server:
 spring:
   thymeleaf:
     cache: false
+
+custom:
+  site:
+    baseUrl: https://localhost
