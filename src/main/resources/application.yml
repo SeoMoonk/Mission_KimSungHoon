@@ -80,4 +80,4 @@ custom:
     from:
       max: 10
   site:
-    baseUrl: http://localhost
+    baseUrl: https://localhost
