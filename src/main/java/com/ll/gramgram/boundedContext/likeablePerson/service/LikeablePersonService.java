@@ -363,10 +363,10 @@ public class LikeablePersonService {
         }
         else if(hasGenderFilter)
         {
-            //V1 (단순 조회)
+            //V1 (단순 조회) => 나에 대한 호감에서 조건에 맞는 것들만 리스트에 추가하는 방법
             //List<LikeablePerson> filteredListByGender = likeablePersonService.filteringByGender(likeablePeople, gender);
 
-            //V2 (쿼리 사용)
+            //V2 (쿼리 사용) => JPA Query를 이용해 조건에 맞는 것들만 찾아오도록 하는 방법
             //List<LikeablePerson> filteredListByGenderQsl = likeablePersonService.filteringByGenderQuery(instaMember.getId(), gender);
 
             //V3 (Stream 의 filter 메서드)
@@ -425,8 +425,4 @@ public class LikeablePersonService {
 
         return comparator;
     }
-
-
-
-
 }
