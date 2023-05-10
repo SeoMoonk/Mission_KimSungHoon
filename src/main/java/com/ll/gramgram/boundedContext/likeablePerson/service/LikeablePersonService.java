@@ -219,94 +219,94 @@ public class LikeablePersonService {
         return RsData.of("S-1", "호감사유변경이 가능합니다.");
     }
 
-    public List<LikeablePerson> filteringByGender(List<LikeablePerson> likeablePeople, String gender) {
+//    public List<LikeablePerson> filteringByGender(List<LikeablePerson> likeablePeople, String gender) {
+//
+//        List<LikeablePerson> filteredListByGender = new ArrayList<>();
+//
+//        for (LikeablePerson likeablePerson : likeablePeople)
+//        {
+//            if (likeablePerson.getFromInstaMember().getGender().equals(gender))
+//            {
+//                filteredListByGender.add(likeablePerson);
+//            }
+//        }
+//
+//        return filteredListByGender;
+//    }
 
-        List<LikeablePerson> filteredListByGender = new ArrayList<>();
+//    public List<LikeablePerson> filteringByGenderQuery(long toInstaMemberId, String gender) {
+//
+//        List<LikeablePerson> filteredListByGender = likeablePersonRepository.findQslByToInstaMemberIdAndFromInstaMember_gender(toInstaMemberId,gender);
+//
+//        return filteredListByGender;
+//    }
 
-        for (LikeablePerson likeablePerson : likeablePeople)
-        {
-            if (likeablePerson.getFromInstaMember().getGender().equals(gender))
-            {
-                filteredListByGender.add(likeablePerson);
-            }
-        }
+//    public List<LikeablePerson> filteringByTypeCode(List<LikeablePerson> likeablePeople, String typeCode) {
+//
+//        List<LikeablePerson> filteredListByTypeCode = new ArrayList<>();
+//        int attractiveTypeCode = Integer.parseInt(typeCode);
+//
+//        for(LikeablePerson likeablePerson : likeablePeople)
+//        {
+//            if(attractiveTypeCode == likeablePerson.getAttractiveTypeCode())
+//            {
+//                filteredListByTypeCode.add(likeablePerson);
+//            }
+//        }
+//
+//        return filteredListByTypeCode;
+//    }
 
-        return filteredListByGender;
-    }
+//    public List<LikeablePerson> filteringByTypeCodeQuery(long toInstaMemberId, String attractiveTypeCode){
+//
+//        int integerTypeCode = Integer.parseInt(attractiveTypeCode);
+//
+//        List<LikeablePerson> filteredListByTypeCode =
+//                likeablePersonRepository.findQslByToInstaMemberIdAndAttractiveTypeCode(toInstaMemberId, integerTypeCode);
+//
+//        //이렇게 해도 됨.
+//        //return likeablePersonRepository.findQslByToInstaMemberIdAndAttractiveTypeCode(toInstaMemberId, integerTypeCode);
+//
+//        return filteredListByTypeCode;
+//    }
 
-    public List<LikeablePerson> filteringByGenderQuery(long toInstaMemberId, String gender) {
+//    public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> filteredListByGender,
+//                                                             List<LikeablePerson> filteredListByTypeCode) {
+//        List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
+//
+//        for(LikeablePerson likeablePerson1 : filteredListByGender)
+//        {
+//            for(LikeablePerson likeablePerson2 : filteredListByTypeCode)
+//            {
+//                if(likeablePerson1.getId() == likeablePerson2.getId())
+//                {
+//                    filteredListByGenderAndTypeCode.add(likeablePerson1);
+//                    break;
+//                }
+//            }
+//        }
+//
+//        return filteredListByGenderAndTypeCode;
+//    }
 
-        List<LikeablePerson> filteredListByGender = likeablePersonRepository.findQslByToInstaMemberIdAndFromInstaMember_gender(toInstaMemberId,gender);
-
-        return filteredListByGender;
-    }
-
-    public List<LikeablePerson> filteringByTypeCode(List<LikeablePerson> likeablePeople, String typeCode) {
-
-        List<LikeablePerson> filteredListByTypeCode = new ArrayList<>();
-        int attractiveTypeCode = Integer.parseInt(typeCode);
-
-        for(LikeablePerson likeablePerson : likeablePeople)
-        {
-            if(attractiveTypeCode == likeablePerson.getAttractiveTypeCode())
-            {
-                filteredListByTypeCode.add(likeablePerson);
-            }
-        }
-
-        return filteredListByTypeCode;
-    }
-
-    public List<LikeablePerson> filteringByTypeCodeQuery(long toInstaMemberId, String attractiveTypeCode){
-
-        int integerTypeCode = Integer.parseInt(attractiveTypeCode);
-
-        List<LikeablePerson> filteredListByTypeCode =
-                likeablePersonRepository.findQslByToInstaMemberIdAndAttractiveTypeCode(toInstaMemberId, integerTypeCode);
-
-        //이렇게 해도 됨.
-        //return likeablePersonRepository.findQslByToInstaMemberIdAndAttractiveTypeCode(toInstaMemberId, integerTypeCode);
-
-        return filteredListByTypeCode;
-    }
-
-    public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> filteredListByGender,
-                                                             List<LikeablePerson> filteredListByTypeCode) {
-        List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
-
-        for(LikeablePerson likeablePerson1 : filteredListByGender)
-        {
-            for(LikeablePerson likeablePerson2 : filteredListByTypeCode)
-            {
-                if(likeablePerson1.getId() == likeablePerson2.getId())
-                {
-                    filteredListByGenderAndTypeCode.add(likeablePerson1);
-                    break;
-                }
-            }
-        }
-
-        return filteredListByGenderAndTypeCode;
-    }
-
-    public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> likeablePeople, String gender, String typeCode){
-
-        List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
-
-        int attractiveTypeCode = Integer.parseInt(typeCode);
-
-        for(LikeablePerson likeablePerson : likeablePeople)
-        {
-            if(likeablePerson.getFromInstaMember().getGender().equals(gender) &&
-                    likeablePerson.getAttractiveTypeCode() == attractiveTypeCode) {
-
-                filteredListByGenderAndTypeCode.add(likeablePerson);
-
-            }
-        }
-
-        return filteredListByGenderAndTypeCode;
-    }
+//    public List<LikeablePerson> filteringByGenderAndTypeCode(List<LikeablePerson> likeablePeople, String gender, String typeCode){
+//
+//        List<LikeablePerson> filteredListByGenderAndTypeCode = new ArrayList<>();
+//
+//        int attractiveTypeCode = Integer.parseInt(typeCode);
+//
+//        for(LikeablePerson likeablePerson : likeablePeople)
+//        {
+//            if(likeablePerson.getFromInstaMember().getGender().equals(gender) &&
+//                    likeablePerson.getAttractiveTypeCode() == attractiveTypeCode) {
+//
+//                filteredListByGenderAndTypeCode.add(likeablePerson);
+//
+//            }
+//        }
+//
+//        return filteredListByGenderAndTypeCode;
+//    }
 
     public boolean hasGenderFilter(String gender){
 
