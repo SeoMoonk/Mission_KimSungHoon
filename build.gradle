@@ -46,6 +46,21 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+    // redis 드라이버
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+// 세션을 스프링 내부객체가 아닌 다른 저장소에 저장할 수 있도록 해주는 녀석
+    implementation 'org.springframework.session:spring-session-core'
+
+// 세션을 redis
+    implementation 'org.springframework.session:spring-session-data-redis'
+
+// 세션을 jdbc
+    implementation 'org.springframework.session:spring-session-data-jdbc'
+
+// 세션을 jdbc
+    implementation 'org.springframework.session:spring-session-data-file'
+
 }
 
 tasks.named('test') {
